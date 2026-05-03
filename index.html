@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fix Pagos — Generador VPN SSTP</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+    color: #1F2937;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 20px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #1F5BCC;
+    font-weight: 800;
+  }
+  header p { color: #6B7280; margin: 8px 0 0 0; font-size: 14px; }
+
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .card h2 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    color: #1F5BCC;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .col { flex: 1; min-width: 180px; }
+  label {
+    display: block;
+    font-size: 12px;
+    color: #4B5563;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #F9FAFB;
+    color: #111827;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #1F5BCC;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(31, 91, 204, 0.1);
+  }
+  .muted { font-size: 11px; color: #6B7280; margin-top: 4px; font-style: italic; }
+
+  button {
+    background: #1F5BCC;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button:hover:not(:disabled) { background: #1E40AF; transform: translateY(-1px); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary {
+    background: #fff;
+    color: #1F5BCC;
+    border: 1.5px solid #1F5BCC;
+  }
+  button.secondary:hover:not(:disabled) { background: #EFF6FF; }
+  button.danger { background: #DC2626; }
+  button.danger:hover:not(:disabled) { background: #B91C1C; }
+  button.whatsapp { background: #25D366; }
+  button.whatsapp:hover:not(:disabled) { background: #128C7E; }
+  button.small { padding: 6px 10px; font-size: 12px; }
+
+  .banner {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin: 10px 0;
+    line-height: 1.5;
+  }
+  .banner.warn { background: #FEF3C7; color: #78350F; border-left: 4px solid #F59E0B; }
+  .banner.info { background: #DBEAFE; color: #1E3A8A; border-left: 4px solid #3B82F6; }
+  .banner.success { background: #D1FAE5; color: #065F46; border-left: 4px solid #10B981; }
+  .banner.error { background: #FEE2E2; color: #7F1D1D; border-left: 4px solid #DC2626; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .stat {
+    background: linear-gradient(135deg, #1F5BCC, #3B82F6);
+    color: #fff;
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .stat .n { font-size: 24px; font-weight: 800; line-height: 1; }
+  .stat .l { font-size: 11px; opacity: 0.9; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  th {
+    background: #F3F4F6;
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #4B5563;
+    border-bottom: 2px solid #E5E7EB;
+  }
+  td { padding: 10px 8px; border-bottom: 1px solid #F3F4F6; vertical-align: middle; }
+  tr:hover { background: #F9FAFB; }
+  .mono { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+  .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #E0E7FF; color: #3730A3; }
+
+  pre.script {
+    background: #0F172A;
+    color: #E2E8F0;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    user-select: all;
+    position: relative;
+  }
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
+  .result-box { background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 8px; padding: 10px; }
+  .result-box .k { font-size: 10px; color: #075985; font-weight: 600; text-transform: uppercase; }
+  .result-box .v { font-size: 15px; font-weight: 700; color: #0C4A6E; margin-top: 2px; }
+
+  .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .search-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+  .search-row input { flex: 1; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    .hide-mobile { display: none; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>🛡️ Generador de VPN SSTP</h1>
+  <p>Provisionamiento automático para Mikrotik CHR · <span class="mono">Fix Pagos</span></p>
+</header>
+
+<!-- ========================= CONFIG ========================= -->
+<div class="card">
+  <h2>⚙️ Configuración del CHR</h2>
+  <div class="banner info">
+    Las credenciales se guardan <b>solo en este navegador</b> (localStorage). No se envían a ningún servidor externo.<br>
+    🔐 Las llamadas al CHR pasan por el <b>proxy seguro de Fix Pagos</b> (necesario para saltar el bloqueo CORS de RouterOS).
+  </div>
+  <div class="row">
+    <div class="col" style="min-width: 260px;">
+      <label>URL del CHR *</label>
+      <input id="cfgUrl" placeholder="http://137.184.69.28" />
+      <div class="muted">Incluye http:// o https:// y el puerto si no es 80/443</div>
+    </div>
+    <div class="col">
+      <label>Usuario API *</label>
+      <input id="cfgUser" placeholder="admin" />
+    </div>
+    <div class="col">
+      <label>Contraseña *</label>
+      <input id="cfgPass" type="password" placeholder="••••••••" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>IP pública del CHR *</label>
+      <input id="cfgPublicIp" placeholder="137.184.69.28" />
+    </div>
+    <div class="col">
+      <label>Interfaz WAN</label>
+      <input id="cfgWan" placeholder="ether1" />
+    </div>
+    <div class="col">
+      <label>Perfil PPP</label>
+      <input id="cfgProfile" placeholder="default-encryption" />
+    </div>
+    <div class="col">
+      <label>Gateway VPN</label>
+      <input id="cfgLocalAddr" placeholder="10.5.5.1" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Pool desde</label>
+      <input id="cfgPoolFrom" placeholder="10.5.5.2" />
+    </div>
+    <div class="col">
+      <label>Pool hasta</label>
+      <input id="cfgPoolTo" placeholder="10.5.5.254" />
+    </div>
+    <div class="col">
+      <label>Puerto mín.</label>
+      <input id="cfgPortMin" type="number" placeholder="10000" />
+    </div>
+    <div class="col">
+      <label>Puerto máx.</label>
+      <input id="cfgPortMax" type="number" placeholder="30000" />
+    </div>
+    <div class="col">
+      <label>🟡 Alerta "por vencer" (días)</label>
+      <input id="cfgWarnDays" type="number" min="1" max="60" placeholder="7" />
+      <div class="muted">VPNs que vencen dentro de X días</div>
+    </div>
+  </div>
+  <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+    <button onclick="saveConfig()">💾 Guardar</button>
+    <button class="secondary" onclick="testConnection()" id="btnTest">🔌 Probar conexión</button>
+  </div>
+  <div id="testResult" style="margin-top: 10px;"></div>
+</div>
+
+<!-- ========================= GENERATE ========================= -->
+<div class="card">
+  <h2>🚀 Nueva VPN para cliente</h2>
+  <div class="row">
+    <div class="col" style="min-width: 240px;">
+      <label>Nombre del cliente *</label>
+      <input id="genName" placeholder="Ej: zona8, cliente-juan, pueblo-nuevo" />
+      <div class="muted">Solo letras, números y guiones. Sin espacios.</div>
+    </div>
+    <div class="col" style="min-width: 200px;">
+      <label>Notas (opcional)</label>
+      <input id="genNotes" placeholder="Ej: Router Zona Centro, contacto Juan 55-1234" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col" style="min-width: 180px;">
+      <label>⏳ Duración</label>
+      <select id="genMonths" onchange="syncExpiryFromMonths()">
+        <option value="1">1 mes</option>
+        <option value="2">2 meses</option>
+        <option value="3">3 meses</option>
+        <option value="6" selected>6 meses</option>
+        <option value="9">9 meses</option>
+        <option value="12">12 meses (1 año)</option>
+        <option value="18">18 meses</option>
+        <option value="24">24 meses (2 años)</option>
+        <option value="custom">🗓️ Fecha personalizada…</option>
+      </select>
+    </div>
+    <div class="col" style="min-width: 180px;">
+      <label>📅 Vence el</label>
+      <input id="genExpiry" type="date" onchange="onExpiryDateChanged()" />
+      <div class="muted">Se calcula automáticamente con la duración</div>
+    </div>
+  </div>
+  <div style="margin-top: 14px;">
+    <button onclick="generateVpn()" id="btnGen">⚡ Generar VPN</button>
+  </div>
+  <div id="genResult"></div>
+</div>
+
+<!-- ========================= HISTORY ========================= -->
+<div class="card">
+  <h2>📜 Historial de VPNs provisionadas</h2>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="search-row">
+    <input id="search" placeholder="🔍 Buscar por nombre, IP, notas..." oninput="renderHistory()" />
+    <select id="sort" onchange="renderHistory()">
+      <option value="date-desc">📅 Más recientes</option>
+      <option value="date-asc">📅 Más antiguos</option>
+      <option value="name-asc">🔤 Nombre A-Z</option>
+      <option value="name-desc">🔤 Nombre Z-A</option>
+      <option value="expiry-asc">⏳ Vence primero</option>
+    </select>
+    <button class="secondary small" onclick="exportCsv()">⬇️ CSV</button>
+  </div>
+
+  <div id="statusFilters" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;"></div>
+
+  <div id="historyList"></div>
+</div>
+
+</div>
+
+<!-- ========================= SCRIPT ========================= -->
+<script>
+// ======================= STATE & CONSTANTS =======================
+const LS_CFG = 'fixpagos_vpn_cfg';
+const LS_HIST = 'fixpagos_vpn_history';
+
+// v2.1: Apunta al backend de PRODUCCIÓN (24/7, independiente de créditos de dev)
+// El proxy es necesario para evitar CORS del RouterOS v7 contra el navegador.
+// Si quieres auto-hostearlo, cambia esta URL a tu propio servidor con el mismo endpoint.
+const PROXY_URL = 'https://isp-billing-manager.emergent.host/api/vpn-proxy';
+
+const DEFAULT_CFG = {
+  url: 'http://137.184.69.28',
+  user: 'admin',
+  password: '',
+  publicIp: '137.184.69.28',
+  wan: 'ether1',
+  profile: 'default-encryption',
+  localAddress: '10.5.5.1',
+  poolFrom: '10.5.5.2',
+  poolTo: '10.5.5.254',
+  portMin: 10000,
+  portMax: 30000,
+  expiryWarningDays: 7,
+};
+
+// ======================= UTILS =======================
+function $(id) { return document.getElementById(id); }
+function loadCfg() {
+  try { return { ...DEFAULT_CFG, ...JSON.parse(localStorage.getItem(LS_CFG) || '{}') }; }
+  catch { return { ...DEFAULT_CFG }; }
+}
+function saveCfg(cfg) { localStorage.setItem(LS_CFG, JSON.stringify(cfg)); }
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(LS_HIST) || '[]'); }
+  catch { return []; }
+}
+function setHistory(h) { localStorage.setItem(LS_HIST, JSON.stringify(h)); }
+
+function readCfgFromForm() {
+  return {
+    url: $('cfgUrl').value.trim().replace(/\/$/, ''),
+    user: $('cfgUser').value.trim(),
+    password: $('cfgPass').value,
+    publicIp: $('cfgPublicIp').value.trim(),
+    wan: $('cfgWan').value.trim() || 'ether1',
+    profile: $('cfgProfile').value.trim() || 'default-encryption',
+    localAddress: $('cfgLocalAddr').value.trim() || '10.5.5.1',
+    poolFrom: $('cfgPoolFrom').value.trim() || '10.5.5.2',
+    poolTo: $('cfgPoolTo').value.trim() || '10.5.5.254',
+    portMin: parseInt($('cfgPortMin').value, 10) || 10000,
+    portMax: parseInt($('cfgPortMax').value, 10) || 30000,
+    expiryWarningDays: Math.max(1, parseInt($('cfgWarnDays').value, 10) || 7),
+  };
+}
+function fillForm(cfg) {
+  $('cfgUrl').value = cfg.url;
+  $('cfgUser').value = cfg.user;
+  $('cfgPass').value = cfg.password;
+  $('cfgPublicIp').value = cfg.publicIp;
+  $('cfgWan').value = cfg.wan;
+  $('cfgProfile').value = cfg.profile;
+  $('cfgLocalAddr').value = cfg.localAddress;
+  $('cfgPoolFrom').value = cfg.poolFrom;
+  $('cfgPoolTo').value = cfg.poolTo;
+  $('cfgPortMin').value = cfg.portMin;
+  $('cfgPortMax').value = cfg.portMax;
+  $('cfgWarnDays').value = cfg.expiryWarningDays || 7;
+}
+
+function authHeader(cfg) {
+  return 'Basic ' + btoa(cfg.user + ':' + cfg.password);
+}
+
+/**
+ * Llama al CHR a traves del proxy de Fix Pagos (para evitar CORS).
+ * Si `opts.method === 'PUT'` o 'POST', pasa `opts.body` como JSON parseado.
+ */
+async function chrFetch(cfg, path, opts = {}) {
+  const method = (opts.method || 'GET').toUpperCase();
+  let body = null;
+  if (opts.body) {
+    try { body = typeof opts.body === 'string' ? JSON.parse(opts.body) : opts.body; }
+    catch { body = null; }
+  }
+  const payload = {
+    url: cfg.url.replace(/\/$/, ''),
+    user: cfg.user,
+    password: cfg.password,
+    method,
+    path,
+    body,
+  };
+  let res;
+  try {
+    res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    throw new Error('No se pudo contactar el proxy de Fix Pagos: ' + e.message);
+  }
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error('Proxy error: ' + (out.detail || res.statusText));
+  }
+  if (!out.ok) {
+    const raw = typeof out.data === 'object' && out.data !== null ? JSON.stringify(out.data) : String(out.data || '');
+    throw new Error('CHR HTTP ' + out.status + ': ' + raw.slice(0, 200));
+  }
+  return out.data;
+}
+
+function ipToNum(ip) {
+  const p = ip.split('.').map(Number);
+  return (p[0]<<24)>>>0 ^ ((p[1]<<16)>>>0) ^ ((p[2]<<8)>>>0) ^ p[3];
+}
+function numToIp(n) {
+  return [(n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255].join('.');
+}
+
+function randomPassword(len = 10) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let out = '';
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  for (let i = 0; i < len; i++) out += chars[arr[i] % chars.length];
+  return out;
+}
+
+function sanitizeName(s) {
+  return s.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+}
+
+function fmtDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: '2-digit' }) + ' ' +
+           d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+  } catch { return iso; }
+}
+
+// ======================= EXPIRY / STATUS HELPERS =======================
+function addMonthsISO(dateStr, months) {
+  // dateStr: YYYY-MM-DD o Date/ISO; months: integer
+  const base = dateStr ? new Date(dateStr) : new Date();
+  if (isNaN(base.getTime())) return null;
+  const d = new Date(base.getTime());
+  const targetMonth = d.getMonth() + months;
+  d.setMonth(targetMonth);
+  // Si el día "rebota" al siguiente mes (ej. 31 ene + 1 mes), retrocede al último del mes destino
+  if (d.getMonth() !== ((base.getMonth() + months) % 12 + 12) % 12) d.setDate(0);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+function daysBetween(aISO, bISO) {
+  const a = new Date(aISO);
+  const b = new Date(bISO);
+  return Math.floor((a.getTime() - b.getTime()) / 86400000);
+}
+function daysUntilExpiry(entry) {
+  if (!entry || !entry.expiresAt) return null;
+  return daysBetween(entry.expiresAt, new Date().toISOString().slice(0,10));
+}
+function computeStatus(entry, cfg) {
+  if (entry.status === 'suspended') return 'suspended';
+  const warnDays = (cfg && cfg.expiryWarningDays) || 7;
+  const d = daysUntilExpiry(entry);
+  if (d === null) return 'active'; // sin fecha de expiración = activo
+  if (d < 0) return 'expired';
+  if (d <= warnDays) return 'soon';
+  return 'active';
+}
+function statusBadge(status) {
+  const map = {
+    active:    { emoji: '🟢', label: 'Activo',      bg: '#DCFCE7', fg: '#065F46' },
+    soon:      { emoji: '🟡', label: 'Por vencer',  bg: '#FEF3C7', fg: '#78350F' },
+    expired:   { emoji: '🔴', label: 'Vencido',     bg: '#FEE2E2', fg: '#7F1D1D' },
+    suspended: { emoji: '⚫', label: 'Suspendido',  bg: '#F3F4F6', fg: '#374151' },
+  };
+  const s = map[status] || map.active;
+  return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${s.bg};color:${s.fg};">${s.emoji} ${s.label}</span>`;
+}
+function syncExpiryFromMonths() {
+  const sel = $('genMonths');
+  const inp = $('genExpiry');
+  if (!sel || !inp) return;
+  const v = sel.value;
+  if (v === 'custom') { inp.focus(); return; }
+  const months = parseInt(v, 10);
+  inp.value = addMonthsISO(new Date().toISOString(), months);
+}
+function onExpiryDateChanged() {
+  const sel = $('genMonths');
+  if (sel) sel.value = 'custom';
+}
+
+// ======================= CORE LOGIC =======================
+async function testConnection() {
+  const btn = $('btnTest');
+  const box = $('testResult');
+  btn.disabled = true;
+  box.innerHTML = '<div class="banner info">⏳ Probando...</div>';
+  try {
+    const cfg = readCfgFromForm();
+    if (!cfg.url || !cfg.user) throw new Error('Falta URL o usuario');
+    const data = await chrFetch(cfg, '/rest/system/identity');
+    box.innerHTML = '<div class="banner success">✅ Conectado — Identidad: <b>' + (data.name || '(sin nombre)') + '</b></div>';
+    saveCfg(cfg);
+  } catch (e) {
+    let hint = '';
+    if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+      hint = '<br><br><b>Posibles causas:</b><br>• CORS bloqueado → abre la opción "Desactivar CORS" en tu navegador o usa Firefox<br>• CHR sin REST API → verifica <code>/ip service print</code><br>• URL incorrecta';
+    }
+    box.innerHTML = '<div class="banner error">❌ ' + e.message + hint + '</div>';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function saveConfig() {
+  const cfg = readCfgFromForm();
+  saveCfg(cfg);
+  const box = $('testResult');
+  box.innerHTML = '<div class="banner success">💾 Configuración guardada localmente.</div>';
+  setTimeout(() => { if (box.innerHTML.includes('Configuración guardada')) box.innerHTML = ''; }, 3000);
+}
+
+async function getUsedIps(cfg) {
+  const secrets = await chrFetch(cfg, '/rest/ppp/secret');
+  return new Set((secrets || []).map(s => s['remote-address']).filter(Boolean));
+}
+async function getUsedPorts(cfg) {
+  const nats = await chrFetch(cfg, '/rest/ip/firewall/nat');
+  const used = new Set();
+  (nats || []).forEach(n => {
+    if (n['dst-port']) {
+      // may be single port or range
+      String(n['dst-port']).split(',').forEach(part => {
+        if (part.includes('-')) {
+          const [a, b] = part.split('-').map(x => parseInt(x, 10));
+          for (let i = a; i <= b; i++) used.add(i);
+        } else {
+          const p = parseInt(part, 10);
+          if (!isNaN(p)) used.add(p);
+        }
+      });
+    }
+  });
+  return used;
+}
+
+function nextFreeIp(cfg, used) {
+  const from = ipToNum(cfg.poolFrom);
+  const to = ipToNum(cfg.poolTo);
+  for (let n = from; n <= to; n++) {
+    const ip = numToIp(n);
+    if (!used.has(ip)) return ip;
+  }
+  throw new Error('Pool de IPs agotado (' + cfg.poolFrom + '–' + cfg.poolTo + ')');
+}
+function nextFreePortBlock(cfg, used, count = 3) {
+  for (let p = cfg.portMin; p <= cfg.portMax - count + 1; p++) {
+    let ok = true;
+    for (let i = 0; i < count; i++) if (used.has(p + i)) { ok = false; break; }
+    if (ok) return p;
+  }
+  throw new Error('No hay ' + count + ' puertos consecutivos libres en ' + cfg.portMin + '–' + cfg.portMax);
+}
+
+async function generateVpn() {
+  const btn = $('btnGen');
+  const box = $('genResult');
+  btn.disabled = true;
+  box.innerHTML = '<div class="banner info"><span class="spinner"></span> &nbsp;Consultando CHR y creando VPN...</div>';
+  try {
+    const cfg = readCfgFromForm();
+    saveCfg(cfg);
+    const rawName = $('genName').value;
+    const name = sanitizeName(rawName);
+    if (!name) throw new Error('Falta el nombre del cliente');
+    if (!cfg.password) throw new Error('Falta contraseña API');
+
+    // Verify no duplicate in CHR
+    const secrets = await chrFetch(cfg, '/rest/ppp/secret');
+    if ((secrets || []).some(s => s.name === name)) {
+      throw new Error('Ya existe un secret llamado "' + name + '" en el CHR. Usa otro nombre o bórralo primero.');
+    }
+
+    const usedIps = new Set((secrets || []).map(s => s['remote-address']).filter(Boolean));
+    const assignedIp = nextFreeIp(cfg, usedIps);
+
+    const usedPorts = await getUsedPorts(cfg);
+    const basePort = nextFreePortBlock(cfg, usedPorts, 3);
+    const portWeb = basePort;
+    const portWinbox = basePort + 1;
+    const portApi = basePort + 2;
+
+    const password = randomPassword(10);
+
+    // 1) Create PPP secret
+    const secret = await chrFetch(cfg, '/rest/ppp/secret', {
+      method: 'PUT',
+      body: JSON.stringify({
+        name, password, profile: cfg.profile, service: 'sstp',
+        'local-address': cfg.localAddress,
+        'remote-address': assignedIp,
+        comment: 'vpn-auto | ' + name + ' | ' + new Date().toISOString().slice(0,10),
+      }),
+    });
+
+    // 2) NAT Web
+    const natWeb = await chrFetch(cfg, '/rest/ip/firewall/nat', {
+      method: 'PUT',
+      body: JSON.stringify({
+        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
+        'in-interface': cfg.wan,
+        'dst-address': cfg.publicIp,
+        'dst-port': String(portWeb),
+        'to-addresses': assignedIp, 'to-ports': '80',
+        comment: 'vpn-auto-web | ' + name,
+      }),
+    });
+    // 3) NAT Winbox
+    const natWinbox = await chrFetch(cfg, '/rest/ip/firewall/nat', {
+      method: 'PUT',
+      body: JSON.stringify({
+        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
+        'in-interface': cfg.wan,
+        'dst-address': cfg.publicIp,
+        'dst-port': String(portWinbox),
+        'to-addresses': assignedIp, 'to-ports': '8291',
+        comment: 'vpn-auto-winbox | ' + name,
+      }),
+    });
+    // 4) NAT API
+    const natApi = await chrFetch(cfg, '/rest/ip/firewall/nat', {
+      method: 'PUT',
+      body: JSON.stringify({
+        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
+        'in-interface': cfg.wan,
+        'dst-address': cfg.publicIp,
+        'dst-port': String(portApi),
+        'to-addresses': assignedIp, 'to-ports': '8728',
+        comment: 'vpn-auto-api | ' + name,
+      }),
+    });
+
+    const clientScript = buildClientScript({
+      publicIp: cfg.publicIp, profile: cfg.profile, name, password,
+    });
+
+    const entry = {
+      id: 'vpn_' + Date.now(),
+      createdAt: new Date().toISOString(),
+      expiresAt: $('genExpiry').value || null,  // YYYY-MM-DD
+      status: 'active',                          // active | suspended
+      clientName: rawName.trim(),
+      sanitizedName: name,
+      notes: $('genNotes').value.trim(),
+      publicIp: cfg.publicIp,
+      assignedIp,
+      profile: cfg.profile,
+      user: name,
+      password,
+      portWeb, portWinbox, portApi,
+      pppSecretId: secret['.id'] || secret.id,
+      natWebId: natWeb['.id'] || natWeb.id,
+      natWinboxId: natWinbox['.id'] || natWinbox.id,
+      natApiId: natApi['.id'] || natApi.id,
+      clientScript,
+    };
+    const h = getHistory();
+    h.unshift(entry);
+    setHistory(h);
+
+    renderResult(entry);
+    $('genName').value = '';
+    $('genNotes').value = '';
+    renderHistory();
+  } catch (e) {
+    box.innerHTML = '<div class="banner error">❌ ' + e.message + '</div>';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function buildClientScript({ publicIp, profile, name, password }) {
+  const ifaceName = 'VPN-FIXPAGOS';
+  return `# Fix Pagos - VPN SSTP auto-provisionada\n` +
+         `# Pegar esta linea en el terminal del Mikrotik cliente:\n\n` +
+         `/interface sstp-client add connect-to=${publicIp} disabled=no name=${ifaceName} profile=${profile} user=${name} password=${password}\n\n` +
+         `# Verificar (debe aparecer connected tras unos segundos):\n` +
+         `# /interface sstp-client print`;
+}
+
+function renderResult(e) {
+  const cfg = loadCfg();
+  const st = computeStatus(e, cfg);
+  const expiryDisplay = e.expiresAt
+    ? new Date(e.expiresAt + 'T12:00:00').toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'})
+    : 'sin fecha';
+  $('genResult').innerHTML = `
+    <div class="banner success">✅ VPN creada para <b>${escapeHtml(e.clientName)}</b> · ${statusBadge(st)} · Vence: <b>${expiryDisplay}</b></div>
+    <div class="result-grid">
+      <div class="result-box"><div class="k">Usuario</div><div class="v mono">${e.user}</div></div>
+      <div class="result-box"><div class="k">Contraseña</div><div class="v mono">${e.password}</div></div>
+      <div class="result-box"><div class="k">IP asignada</div><div class="v mono">${e.assignedIp}</div></div>
+      <div class="result-box"><div class="k">Puerto Web</div><div class="v mono">${e.portWeb}</div></div>
+      <div class="result-box"><div class="k">Puerto Winbox</div><div class="v mono">${e.portWinbox}</div></div>
+      <div class="result-box"><div class="k">Puerto API</div><div class="v mono">${e.portApi}</div></div>
+    </div>
+    <label>Script para el Mikrotik del cliente</label>
+    <pre class="script" id="scriptBox">${escapeHtml(e.clientScript)}</pre>
+    <div class="actions" style="margin-top: 10px;">
+      <button onclick="copyScript('${e.id}')">📋 Copiar script</button>
+      <button class="whatsapp" onclick="shareWhatsApp('${e.id}')">💬 WhatsApp</button>
+    </div>
+  `;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function copyScript(id) {
+  const e = getHistory().find(x => x.id === id);
+  if (!e) return;
+  navigator.clipboard.writeText(e.clientScript).then(() => {
+    alert('Script copiado al portapapeles');
+  });
+}
+function shareWhatsApp(id) {
+  const e = getHistory().find(x => x.id === id);
+  if (!e) return;
+  const text = [
+    '🛡️ VPN SSTP - ' + e.clientName,
+    '',
+    '• Usuario: ' + e.user,
+    '• Contraseña: ' + e.password,
+    '• IP: ' + e.assignedIp,
+    '• Puertos: Web=' + e.portWeb + ', Winbox=' + e.portWinbox + ', API=' + e.portApi,
+    '',
+    'Script para pegar en el Mikrotik cliente:',
+    '',
+    e.clientScript,
+  ].join('\n');
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+// ======================= HISTORY UI =======================
+let __statusFilter = 'all';
+function setStatusFilter(f) { __statusFilter = f; renderHistory(); }
+
+function renderHistory() {
+  const list = $('historyList');
+  const h = getHistory();
+  const cfg = loadCfg();
+  const q = $('search').value.trim().toLowerCase();
+  const sort = $('sort').value;
+
+  // Compute status for each entry
+  const withStatus = h.map(e => ({ ...e, _status: computeStatus(e, cfg) }));
+
+  // Apply status filter
+  let filtered = withStatus;
+  if (__statusFilter !== 'all') {
+    filtered = filtered.filter(e => e._status === __statusFilter);
+  }
+  if (q) {
+    filtered = filtered.filter(e =>
+      (e.clientName || '').toLowerCase().includes(q) ||
+      (e.user || '').toLowerCase().includes(q) ||
+      (e.assignedIp || '').includes(q) ||
+      (e.notes || '').toLowerCase().includes(q)
+    );
+  }
+  filtered.sort((a, b) => {
+    if (sort === 'date-desc') return (b.createdAt || '').localeCompare(a.createdAt || '');
+    if (sort === 'date-asc') return (a.createdAt || '').localeCompare(b.createdAt || '');
+    if (sort === 'name-asc') return (a.clientName || '').localeCompare(b.clientName || '');
+    if (sort === 'name-desc') return (b.clientName || '').localeCompare(a.clientName || '');
+    if (sort === 'expiry-asc') return (a.expiresAt || '9999').localeCompare(b.expiresAt || '9999');
+    return 0;
+  });
+
+  // Counts by status
+  const counts = { all: h.length, active: 0, soon: 0, expired: 0, suspended: 0 };
+  withStatus.forEach(e => { counts[e._status] = (counts[e._status] || 0) + 1; });
+
+  // Status filter pills
+  const pill = (key, emoji, label, color) => `
+    <button class="small" style="
+      padding:6px 12px;
+      background:${__statusFilter===key ? color : '#fff'};
+      color:${__statusFilter===key ? '#fff' : color};
+      border:1.5px solid ${color};
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+    " onclick="setStatusFilter('${key}')">${emoji} ${label} <b>(${counts[key]||0})</b></button>
+  `;
+  $('statusFilters').innerHTML =
+    pill('all', '📋', 'Todos', '#1F5BCC') +
+    pill('active', '🟢', 'Activos', '#16A34A') +
+    pill('soon', '🟡', 'Por vencer', '#F59E0B') +
+    pill('expired', '🔴', 'Vencidos', '#DC2626') +
+    pill('suspended', '⚫', 'Suspendidos', '#6B7280');
+
+  // Stats
+  $('stats').innerHTML = `
+    <div class="stat"><div class="n">${h.length}</div><div class="l">VPNs totales</div></div>
+    <div class="stat" style="background: linear-gradient(135deg, #16A34A, #22C55E)"><div class="n">${counts.active||0}</div><div class="l">🟢 Activos</div></div>
+    <div class="stat" style="background: linear-gradient(135deg, #F59E0B, #FBBF24)"><div class="n">${counts.soon||0}</div><div class="l">🟡 Por vencer</div></div>
+    <div class="stat" style="background: linear-gradient(135deg, #DC2626, #F87171)"><div class="n">${counts.expired||0}</div><div class="l">🔴 Vencidos</div></div>
+    <div class="stat" style="background: linear-gradient(135deg, #6B7280, #9CA3AF)"><div class="n">${counts.suspended||0}</div><div class="l">⚫ Suspendidos</div></div>
+  `;
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="banner info">' + (q || __statusFilter!=='all' ? 'Sin resultados con los filtros actuales.' : 'Aún no has generado ninguna VPN. Llena el formulario de arriba.') + '</div>';
+    return;
+  }
+
+  list.innerHTML = `
+    <div style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Estado</th>
+          <th>Cliente</th>
+          <th class="hide-mobile">Usuario</th>
+          <th>IP</th>
+          <th>Vence</th>
+          <th class="hide-mobile">Puertos</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(e => {
+          const st = e._status;
+          const dLeft = daysUntilExpiry(e);
+          let expiryStr = '—';
+          if (e.expiresAt) {
+            const formatted = new Date(e.expiresAt + 'T12:00:00').toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'2-digit'});
+            let subtitle = '';
+            if (st === 'suspended') subtitle = e.suspendedAt ? 'susp. ' + fmtDate(e.suspendedAt).split(' ')[0] : '';
+            else if (dLeft !== null && dLeft < 0) subtitle = 'hace ' + Math.abs(dLeft) + 'd';
+            else if (dLeft !== null) subtitle = 'en ' + dLeft + 'd';
+            expiryStr = `<b>${formatted}</b>${subtitle?'<div class="muted" style="margin-top:2px">'+subtitle+'</div>':''}`;
+          }
+          // Action buttons depend on status
+          let extraBtns = '';
+          if (st === 'suspended') {
+            extraBtns = `<button class="small" style="background:#16A34A;color:#fff;" onclick="reactivateVpn('${e.id}')" title="Reactivar">✅</button>`;
+          } else {
+            extraBtns = `<button class="small" style="background:#F59E0B;color:#fff;" onclick="renewVpn('${e.id}')" title="Renovar fecha">📅</button>
+                         <button class="small" style="background:#6B7280;color:#fff;" onclick="suspendVpn('${e.id}')" title="Suspender (borrar del CHR)">🚫</button>`;
+          }
+          return `
+            <tr>
+              <td>${statusBadge(st)}</td>
+              <td>
+                <b>${escapeHtml(e.clientName)}</b>
+                ${e.notes ? '<div class="muted" style="margin-top:2px">' + escapeHtml(e.notes) + '</div>' : ''}
+              </td>
+              <td class="mono hide-mobile">${e.user}</td>
+              <td class="mono">${e.assignedIp}</td>
+              <td>${expiryStr}</td>
+              <td class="hide-mobile">
+                <span class="chip">W:${e.portWeb}</span>
+                <span class="chip">X:${e.portWinbox}</span>
+                <span class="chip">A:${e.portApi}</span>
+              </td>
+              <td>
+                <div class="actions">
+                  <button class="secondary small" onclick="viewEntry('${e.id}')" title="Ver">👁️</button>
+                  <button class="whatsapp small" onclick="shareWhatsApp('${e.id}')" title="WhatsApp">💬</button>
+                  ${extraBtns}
+                  <button class="danger small" onclick="deleteEntry('${e.id}')" title="Borrar permanentemente">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+    </div>
+  `;
+}
+
+// ========== SUSPEND: borra del CHR secret + 3 NATs, mantiene historial ==========
+async function suspendVpn(id) {
+  const h = getHistory();
+  const e = h.find(x => x.id === id);
+  if (!e) return;
+  if (e.status === 'suspended') { alert('Ya está suspendida'); return; }
+  if (!confirm('🚫 Suspender VPN "' + e.clientName + '"?\n\n' +
+    '• Se eliminará el PPP secret y los 3 NATs del CHR.\n' +
+    '• Se conservará el registro completo en el historial.\n' +
+    '• Podrás reactivarla después con las mismas credenciales.')) return;
+  try {
+    const cfg = readCfgFromForm();
+    if (!cfg.password) throw new Error('Falta la contraseña API del CHR');
+    const errors = [];
+    for (const [path, idKey] of [
+      ['/rest/ppp/secret/', 'pppSecretId'],
+      ['/rest/ip/firewall/nat/', 'natWebId'],
+      ['/rest/ip/firewall/nat/', 'natWinboxId'],
+      ['/rest/ip/firewall/nat/', 'natApiId'],
+    ]) {
+      if (!e[idKey]) continue;
+      try { await chrFetch(cfg, path + encodeURIComponent(e[idKey]), { method: 'DELETE' }); }
+      catch (err) { errors.push(idKey + ': ' + err.message); }
+    }
+    // Marcar como suspendido, conservando credenciales y puertos
+    e.status = 'suspended';
+    e.suspendedAt = new Date().toISOString();
+    // Guardar IDs anteriores para referencia (pero ya no existen en CHR)
+    e.pppSecretId = null;
+    e.natWebId = null;
+    e.natWinboxId = null;
+    e.natApiId = null;
+    setHistory(h);
+    renderHistory();
+    if (errors.length) alert('Suspendido, pero con avisos del CHR:\n' + errors.join('\n'));
+  } catch (err) {
+    alert('❌ Error al suspender: ' + err.message);
+  }
+}
+
+// ========== REACTIVATE: re-crea en el CHR con las mismas creds + extiende fecha ==========
+async function reactivateVpn(id) {
+  const h = getHistory();
+  const e = h.find(x => x.id === id);
+  if (!e) return;
+  if (e.status !== 'suspended') { alert('Esta VPN no está suspendida'); return; }
+
+  // Preguntar meses a extender (1-12)
+  const inp = prompt(
+    '✅ Reactivar VPN "' + e.clientName + '"\n\n' +
+    '¿Cuántos meses extender desde hoy?\n' +
+    '(1 a 12)',
+    '1'
+  );
+  if (inp === null) return;
+  const months = parseInt(inp, 10);
+  if (isNaN(months) || months < 1 || months > 12) {
+    alert('Ingresa un número entre 1 y 12'); return;
+  }
+
+  try {
+    const cfg = readCfgFromForm();
+    if (!cfg.password) throw new Error('Falta la contraseña API del CHR');
+
+    // Verificar que no exista ya con ese nombre (por si se reactivó manualmente antes)
+    const secrets = await chrFetch(cfg, '/rest/ppp/secret');
+    const existing = (secrets || []).find(s => s.name === e.sanitizedName || s.name === e.user);
+    if (existing) {
+      if (!confirm('Ya existe en el CHR un secret llamado "' + existing.name + '".\n\n¿Borrarlo y recrear con las credenciales guardadas?')) return;
+      await chrFetch(cfg, '/rest/ppp/secret/' + encodeURIComponent(existing['.id']), { method: 'DELETE' });
+    }
+
+    // Check IP libre (si la IP original está tomada, asignar una nueva)
+    const usedIps = new Set((secrets || []).filter(s => !existing || s['.id']!==existing['.id']).map(s => s['remote-address']).filter(Boolean));
+    let assignedIp = e.assignedIp;
+    if (usedIps.has(assignedIp)) {
+      assignedIp = nextFreeIp(cfg, usedIps);
+      if (!confirm('La IP original ' + e.assignedIp + ' ya está ocupada.\n\nSe asignará: ' + assignedIp + '\n\n¿Continuar?')) return;
+    }
+
+    // Check puertos libres (si los originales están tomados, reasignar bloque)
+    const usedPorts = await getUsedPorts(cfg);
+    let portWeb = e.portWeb, portWinbox = e.portWinbox, portApi = e.portApi;
+    if (usedPorts.has(portWeb) || usedPorts.has(portWinbox) || usedPorts.has(portApi)) {
+      const base = nextFreePortBlock(cfg, usedPorts, 3);
+      portWeb = base; portWinbox = base + 1; portApi = base + 2;
+      if (!confirm('Algunos puertos originales (' + e.portWeb + '-' + e.portApi + ') ya están ocupados.\n\nSe asignarán: ' + portWeb + '-' + portApi + '\n\n¿Continuar?')) return;
+    }
+
+    // 1) Re-crear PPP secret con las credenciales guardadas
+    const secret = await chrFetch(cfg, '/rest/ppp/secret', {
+      method: 'PUT',
+      body: JSON.stringify({
+        name: e.sanitizedName || e.user,
+        password: e.password,
+        profile: e.profile || cfg.profile,
+        service: 'sstp',
+        'local-address': cfg.localAddress,
+        'remote-address': assignedIp,
+        comment: 'vpn-auto | ' + (e.sanitizedName || e.user) + ' | reactivado ' + new Date().toISOString().slice(0,10),
+      }),
+    });
+
+    // 2-4) NATs (web, winbox, api)
+    const natWeb = await chrFetch(cfg, '/rest/ip/firewall/nat', {
+      method: 'PUT',
+      body: JSON.stringify({
+        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
+        'in-interface': cfg.wan, 'dst-address': cfg.publicIp,
+        'dst-port': String(portWeb), 'to-addresses': assignedIp, 'to-ports': '80',
+        comment: 'vpn-auto-web | ' + (e.sanitizedName || e.user),
+      }),
+    });
+    const natWinbox = await chrFetch(cfg, '/rest/ip/firewall/nat', {
+      method: 'PUT',
+      body: JSON.stringify({
+        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
+        'in-interface': cfg.wan, 'dst-address': cfg.publicIp,
+        'dst-port': String(portWinbox), 'to-addresses': assignedIp, 'to-ports': '8291',
+        comment: 'vpn-auto-winbox | ' + (e.sanitizedName || e.user),
+      }),
+    });
+    const natApi = await chrFetch(cfg, '/rest/ip/firewall/nat', {
+      method: 'PUT',
+      body: JSON.stringify({
+        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
+        'in-interface': cfg.wan, 'dst-address': cfg.publicIp,
+        'dst-port': String(portApi), 'to-addresses': assignedIp, 'to-ports': '8728',
+        comment: 'vpn-auto-api | ' + (e.sanitizedName || e.user),
+      }),
+    });
+
+    // Actualizar entry
+    e.status = 'active';
+    e.assignedIp = assignedIp;
+    e.portWeb = portWeb; e.portWinbox = portWinbox; e.portApi = portApi;
+    e.pppSecretId = secret['.id'] || secret.id;
+    e.natWebId = natWeb['.id'] || natWeb.id;
+    e.natWinboxId = natWinbox['.id'] || natWinbox.id;
+    e.natApiId = natApi['.id'] || natApi.id;
+    e.expiresAt = addMonthsISO(new Date().toISOString(), months);
+    e.reactivatedAt = new Date().toISOString();
+    // Regenerar script con la IP (por si cambió)
+    e.clientScript = buildClientScript({
+      publicIp: cfg.publicIp, profile: e.profile || cfg.profile, name: e.sanitizedName || e.user, password: e.password,
+    });
+    setHistory(h);
+    renderHistory();
+    alert('✅ VPN "' + e.clientName + '" reactivada por ' + months + ' mes(es).\nVence: ' + e.expiresAt);
+  } catch (err) {
+    alert('❌ Error al reactivar: ' + err.message);
+  }
+}
+
+// ========== RENEW: extiende la fecha sin tocar el CHR ==========
+function renewVpn(id) {
+  const h = getHistory();
+  const e = h.find(x => x.id === id);
+  if (!e) return;
+  if (e.status === 'suspended') { alert('Para reactivar una VPN suspendida usa el botón ✅'); return; }
+
+  const inp = prompt(
+    '📅 Renovar fecha de vencimiento de "' + e.clientName + '"\n\n' +
+    '¿Cuántos meses agregar?\n' +
+    '(1 a 24)\n\n' +
+    (e.expiresAt ? 'Vence actualmente: ' + e.expiresAt : 'Sin fecha de vencimiento previa'),
+    '1'
+  );
+  if (inp === null) return;
+  const months = parseInt(inp, 10);
+  if (isNaN(months) || months < 1 || months > 24) {
+    alert('Ingresa un número entre 1 y 24'); return;
+  }
+  // Base: si ya venció, parte desde hoy; si no, suma a la fecha actual de expiración
+  const today = new Date().toISOString().slice(0,10);
+  const base = (!e.expiresAt || e.expiresAt < today) ? today : e.expiresAt;
+  e.expiresAt = addMonthsISO(base + 'T12:00:00', months);
+  setHistory(h);
+  renderHistory();
+  alert('📅 Fecha extendida a: ' + e.expiresAt);
+}
+
+function viewEntry(id) {
+  const e = getHistory().find(x => x.id === id);
+  if (!e) return;
+  renderResult(e);
+  window.scrollTo({ top: $('genResult').offsetTop - 20, behavior: 'smooth' });
+}
+
+async function deleteEntry(id) {
+  const e = getHistory().find(x => x.id === id);
+  if (!e) return;
+  const choice = confirm(
+    'Borrar VPN "' + e.clientName + '"?\n\n' +
+    '✅ OK: borrar del historial Y del CHR (PPP secret + 3 NAT rules)\n' +
+    '❌ Cancelar: no hacer nada\n\n' +
+    '(Para borrar solo del historial local, usa "Solo local" desde el visor)'
+  );
+  if (!choice) return;
+  try {
+    const cfg = readCfgFromForm();
+    const errors = [];
+    for (const [path, idKey] of [
+      ['/rest/ppp/secret/', 'pppSecretId'],
+      ['/rest/ip/firewall/nat/', 'natWebId'],
+      ['/rest/ip/firewall/nat/', 'natWinboxId'],
+      ['/rest/ip/firewall/nat/', 'natApiId'],
+    ]) {
+      if (!e[idKey]) continue;
+      try { await chrFetch(cfg, path + encodeURIComponent(e[idKey]), { method: 'DELETE' }); }
+      catch (err) { errors.push(idKey + ': ' + err.message); }
+    }
+    const h = getHistory().filter(x => x.id !== id);
+    setHistory(h);
+    renderHistory();
+    if (errors.length) alert('Borrado local OK, pero fallos en CHR:\n' + errors.join('\n'));
+  } catch (e) {
+    if (confirm('Error borrando del CHR: ' + e.message + '\n\n¿Borrar solo del historial local?')) {
+      const h = getHistory().filter(x => x.id !== id);
+      setHistory(h);
+      renderHistory();
+    }
+  }
+}
+
+function exportCsv() {
+  const h = getHistory();
+  const cfg = loadCfg();
+  if (!h.length) { alert('Historial vacío'); return; }
+  const rows = [
+    ['Fecha creación', 'Cliente', 'Notas', 'Usuario', 'Contraseña', 'IP asignada', 'IP pública', 'Puerto Web', 'Puerto Winbox', 'Puerto API', 'Vence', 'Estado'],
+    ...h.map(e => [
+      e.createdAt, e.clientName, e.notes || '',
+      e.user, e.password, e.assignedIp, e.publicIp,
+      e.portWeb, e.portWinbox, e.portApi,
+      e.expiresAt || '—',
+      computeStatus(e, cfg),
+    ]),
+  ];
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'vpn_history_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ======================= INIT =======================
+(function init() {
+  fillForm(loadCfg());
+  // Sync fecha inicial basada en el select de meses (default 6 meses)
+  if ($('genMonths') && $('genExpiry')) syncExpiryFromMonths();
+  renderHistory();
+})();
+</script>
+</body>
+</html>
