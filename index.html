@@ -379,11 +379,17 @@
     <div class="col" style="min-width: 240px;">
       <label>Nombre del cliente *</label>
       <input id="genName" placeholder="Ej: zona8, cliente-juan, pueblo-nuevo" />
-      <div class="muted">Solo letras, números y guiones. Sin espacios.</div>
+      <div class="muted">Solo letras, números y guiones. Sin espacios. <strong>Es el username VPN</strong>.</div>
+    </div>
+    <div class="col" style="min-width: 220px;">
+      <label>👤 Cliente comprador / Grupo</label>
+      <input id="genCustomer" list="customerList" placeholder="Ej: Juan Pérez, Empresa XYZ" />
+      <datalist id="customerList"></datalist>
+      <div class="muted">Persona/empresa que compró. Si compra varias VPNs, repite el mismo nombre para agruparlas.</div>
     </div>
     <div class="col" style="min-width: 200px;">
       <label>Notas (opcional)</label>
-      <input id="genNotes" placeholder="Ej: Router Zona Centro, contacto Juan 55-1234" />
+      <input id="genNotes" placeholder="Ej: Router Zona Centro, contacto 55-1234" />
     </div>
   </div>
   <div class="row">
@@ -420,13 +426,14 @@
   <div class="stats" id="stats"></div>
 
   <div class="search-row">
-    <input id="search" placeholder="🔍 Buscar por nombre, IP, notas..." oninput="renderHistory()" />
+    <input id="search" placeholder="🔍 Buscar por nombre, cliente, IP, notas..." oninput="renderHistory()" />
     <select id="sort" onchange="renderHistory()">
       <option value="date-desc">📅 Más recientes</option>
       <option value="date-asc">📅 Más antiguos</option>
       <option value="name-asc">🔤 Nombre A-Z</option>
       <option value="name-desc">🔤 Nombre Z-A</option>
       <option value="expiry-asc">⏳ Vence primero</option>
+      <option value="customer-asc">👤 Por cliente comprador</option>
     </select>
     <button class="secondary small" onclick="exportCsv()">⬇️ CSV</button>
   </div>
@@ -800,6 +807,7 @@ async function generateVpn() {
       status: 'active',                          // active | suspended
       clientName: rawName.trim(),
       sanitizedName: name,
+      customer: ($('genCustomer') ? $('genCustomer').value.trim() : ''),  // v2: cliente comprador
       notes: $('genNotes').value.trim(),
       publicIp: cfg.publicIp,
       assignedIp,
@@ -820,7 +828,9 @@ async function generateVpn() {
     renderResult(entry);
     $('genName').value = '';
     $('genNotes').value = '';
+    // No limpiar genCustomer — facilita registrar varias VPNs del mismo cliente seguidas
     renderHistory();
+    refreshCustomerList();
   } catch (e) {
     box.innerHTML = '<div class="banner error">❌ ' + e.message + '</div>';
   } finally {
@@ -895,6 +905,19 @@ function shareWhatsApp(id) {
 let __statusFilter = 'all';
 function setStatusFilter(f) { __statusFilter = f; renderHistory(); }
 
+// v2: filtro por cliente comprador (chip clickable)
+let __customerFilter = '';
+function setCustomerFilter(c) { __customerFilter = c || ''; renderHistory(); window.scrollTo({ top: document.querySelector('#search').offsetTop - 80, behavior:'smooth'}); }
+function clearCustomerFilter() { __customerFilter = ''; renderHistory(); }
+
+// v2: refrescar datalist de clientes para autocomplete
+function refreshCustomerList() {
+  const list = document.getElementById('customerList');
+  if (!list) return;
+  const customers = Array.from(new Set(getHistory().map(e => (e.customer || '').trim()).filter(Boolean))).sort();
+  list.innerHTML = customers.map(c => '<option value="' + c.replace(/"/g, '&quot;') + '">').join('');
+}
+
 function renderHistory() {
   const list = $('historyList');
   const h = getHistory();
@@ -914,9 +937,14 @@ function renderHistory() {
     filtered = filtered.filter(e =>
       (e.clientName || '').toLowerCase().includes(q) ||
       (e.user || '').toLowerCase().includes(q) ||
+      (e.customer || '').toLowerCase().includes(q) ||
       (e.assignedIp || '').includes(q) ||
       (e.notes || '').toLowerCase().includes(q)
     );
+  }
+  // Filtro adicional por cliente comprador exacto (botón en el chip de cliente)
+  if (__customerFilter) {
+    filtered = filtered.filter(e => (e.customer || '').toLowerCase() === __customerFilter.toLowerCase());
   }
   filtered.sort((a, b) => {
     if (sort === 'date-desc') return (b.createdAt || '').localeCompare(a.createdAt || '');
@@ -924,6 +952,7 @@ function renderHistory() {
     if (sort === 'name-asc') return (a.clientName || '').localeCompare(b.clientName || '');
     if (sort === 'name-desc') return (b.clientName || '').localeCompare(a.clientName || '');
     if (sort === 'expiry-asc') return (a.expiresAt || '9999').localeCompare(b.expiresAt || '9999');
+    if (sort === 'customer-asc') return (a.customer || 'zzzz').localeCompare(b.customer || 'zzzz');
     return 0;
   });
 
@@ -965,6 +994,7 @@ function renderHistory() {
   }
 
   list.innerHTML = `
+    ${__customerFilter ? '<div class="banner info" style="background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;"><div>👤 Filtrando por cliente: <b>' + escapeHtml(__customerFilter) + '</b> — <b>' + filtered.length + '</b> VPN(s) en este grupo</div><button class="small secondary" onclick="clearCustomerFilter()">✖ Quitar filtro</button></div>' : ''}
     <div style="overflow-x: auto;">
     <table>
       <thead>
@@ -1004,6 +1034,7 @@ function renderHistory() {
               <td>${statusBadge(st)}</td>
               <td>
                 <b>${escapeHtml(e.clientName)}</b>
+                ${e.customer ? '<div style="margin-top:3px;"><a onclick="setCustomerFilter(\'' + escapeHtml(e.customer).replace(/'/g, "\\'") + '\')" style="background:#EDE9FE;color:#5B21B6;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;display:inline-block;">👤 ' + escapeHtml(e.customer) + '</a></div>' : ''}
                 ${e.notes ? '<div class="muted" style="margin-top:2px">' + escapeHtml(e.notes) + '</div>' : ''}
               </td>
               <td class="mono hide-mobile">${e.user}</td>
@@ -1261,9 +1292,9 @@ function exportCsv() {
   const cfg = loadCfg();
   if (!h.length) { alert('Historial vacío'); return; }
   const rows = [
-    ['Fecha creación', 'Cliente', 'Notas', 'Usuario', 'Contraseña', 'IP asignada', 'IP pública', 'Puerto Web', 'Puerto Winbox', 'Puerto API', 'Vence', 'Estado'],
+    ['Fecha creación', 'Cliente VPN', 'Cliente comprador', 'Notas', 'Usuario', 'Contraseña', 'IP asignada', 'IP pública', 'Puerto Web', 'Puerto Winbox', 'Puerto API', 'Vence', 'Estado'],
     ...h.map(e => [
-      e.createdAt, e.clientName, e.notes || '',
+      e.createdAt, e.clientName, e.customer || '', e.notes || '',
       e.user, e.password, e.assignedIp, e.publicIp,
       e.portWeb, e.portWinbox, e.portApi,
       e.expiresAt || '—',
@@ -1348,6 +1379,7 @@ function checkAuth() {
   // Sync fecha inicial basada en el select de meses (default 6 meses)
   if ($('genMonths') && $('genExpiry')) syncExpiryFromMonths();
   renderHistory();
+  refreshCustomerList();  // v2: poblar autocomplete con clientes ya registrados
 })();
 </script>
 </body>
