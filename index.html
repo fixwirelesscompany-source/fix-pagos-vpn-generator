@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fix Pagos — Generador VPN SSTP</title>
+<title>Fix Pagos — Generador VPN SSTP v2.2</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -15,270 +15,76 @@
     min-height: 100vh;
   }
   .wrap { max-width: 1100px; margin: 0 auto; }
-  header {
-    text-align: center;
-    margin-bottom: 24px;
-    padding: 20px;
-  }
-  header h1 {
-    margin: 0;
-    font-size: 28px;
-    color: #1F5BCC;
-    font-weight: 800;
-  }
+  header { text-align: center; margin-bottom: 24px; padding: 20px; }
+  header h1 { margin: 0; font-size: 28px; color: #1F5BCC; font-weight: 800; }
   header p { color: #6B7280; margin: 8px 0 0 0; font-size: 14px; }
-
-  .card {
-    background: #fff;
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  }
-  .card h2 {
-    margin: 0 0 16px 0;
-    font-size: 18px;
-    color: #1F5BCC;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+  .card h2 { margin: 0 0 16px 0; font-size: 18px; color: #1F5BCC; display: flex; align-items: center; gap: 8px; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
   .col { flex: 1; min-width: 180px; }
-  label {
-    display: block;
-    font-size: 12px;
-    color: #4B5563;
-    font-weight: 600;
-    margin-bottom: 4px;
-    margin-top: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-  input, select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #D1D5DB;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
-    background: #F9FAFB;
-    color: #111827;
-  }
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: #1F5BCC;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(31, 91, 204, 0.1);
-  }
+  label { display: block; font-size: 12px; color: #4B5563; font-weight: 600; margin-bottom: 4px; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+  input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 14px; font-family: inherit; background: #F9FAFB; color: #111827; }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: #1F5BCC; background: #fff; box-shadow: 0 0 0 3px rgba(31, 91, 204, 0.1); }
   .muted { font-size: 11px; color: #6B7280; margin-top: 4px; font-style: italic; }
-
-  button {
-    background: #1F5BCC;
-    color: #fff;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+  button { background: #1F5BCC; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
   button:hover:not(:disabled) { background: #1E40AF; transform: translateY(-1px); }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
-  button.secondary {
-    background: #fff;
-    color: #1F5BCC;
-    border: 1.5px solid #1F5BCC;
-  }
+  button.secondary { background: #fff; color: #1F5BCC; border: 1.5px solid #1F5BCC; }
   button.secondary:hover:not(:disabled) { background: #EFF6FF; }
   button.danger { background: #DC2626; }
   button.danger:hover:not(:disabled) { background: #B91C1C; }
   button.whatsapp { background: #25D366; }
   button.whatsapp:hover:not(:disabled) { background: #128C7E; }
   button.small { padding: 6px 10px; font-size: 12px; }
-
-  .banner {
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    margin: 10px 0;
-    line-height: 1.5;
-  }
+  .banner { padding: 12px 14px; border-radius: 10px; font-size: 13px; margin: 10px 0; line-height: 1.5; }
   .banner.warn { background: #FEF3C7; color: #78350F; border-left: 4px solid #F59E0B; }
   .banner.info { background: #DBEAFE; color: #1E3A8A; border-left: 4px solid #3B82F6; }
   .banner.success { background: #D1FAE5; color: #065F46; border-left: 4px solid #10B981; }
   .banner.error { background: #FEE2E2; color: #7F1D1D; border-left: 4px solid #DC2626; }
-
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
-  .stat {
-    background: linear-gradient(135deg, #1F5BCC, #3B82F6);
-    color: #fff;
-    padding: 14px;
-    border-radius: 10px;
-    text-align: center;
-  }
+  .stat { background: linear-gradient(135deg, #1F5BCC, #3B82F6); color: #fff; padding: 14px; border-radius: 10px; text-align: center; }
   .stat .n { font-size: 24px; font-weight: 800; line-height: 1; }
   .stat .l { font-size: 11px; opacity: 0.9; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-
   table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-  th {
-    background: #F3F4F6;
-    padding: 10px 8px;
-    text-align: left;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #4B5563;
-    border-bottom: 2px solid #E5E7EB;
-  }
+  th { background: #F3F4F6; padding: 10px 8px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #4B5563; border-bottom: 2px solid #E5E7EB; }
   td { padding: 10px 8px; border-bottom: 1px solid #F3F4F6; vertical-align: middle; }
   tr:hover { background: #F9FAFB; }
   .mono { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
   .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #E0E7FF; color: #3730A3; }
-
-  pre.script {
-    background: #0F172A;
-    color: #E2E8F0;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    line-height: 1.5;
-    overflow-x: auto;
-    font-family: "SF Mono", Menlo, Consolas, monospace;
-    user-select: all;
-    position: relative;
-  }
+  pre.script { background: #0F172A; color: #E2E8F0; padding: 14px; border-radius: 8px; font-size: 12px; line-height: 1.5; overflow-x: auto; font-family: "SF Mono", Menlo, Consolas, monospace; user-select: all; position: relative; }
   .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
   .result-box { background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 8px; padding: 10px; }
   .result-box .k { font-size: 10px; color: #075985; font-weight: 600; text-transform: uppercase; }
   .result-box .v { font-size: 15px; font-weight: 700; color: #0C4A6E; margin-top: 2px; }
-
   .actions { display: flex; gap: 6px; flex-wrap: wrap; }
   .search-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
   .search-row input { flex: 1; }
   .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  @media (max-width: 640px) {
-    .hide-mobile { display: none; }
-    table { font-size: 11px; }
-    th, td { padding: 6px 4px; }
-  }
-
-  /* ====== LOGIN OVERLAY ====== */
-  #login-overlay {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 20px;
-  }
+  @media (max-width: 640px) { .hide-mobile { display: none; } table { font-size: 11px; } th, td { padding: 6px 4px; } }
+  #login-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
   #login-overlay.hidden { display: none; }
-  #login-box {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 32px;
-    width: 100%;
-    max-width: 380px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    text-align: center;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  }
-  #login-box img {
-    max-width: 120px;
-    margin-bottom: 14px;
-    filter: drop-shadow(0 4px 10px rgba(79,70,229,0.25));
-  }
-  #login-box h2 {
-    margin: 0 0 6px 0;
-    color: #111827;
-    font-size: 20px;
-    font-weight: 800;
-  }
+  #login-box { background: #ffffff; border-radius: 18px; padding: 32px; width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  #login-box .fw-logo { width: 80px; height: 80px; margin: 0 auto 14px; background: linear-gradient(135deg, #4F46E5, #7C3AED); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; font-weight: 800; box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
+  #login-box h2 { margin: 0 0 6px 0; color: #111827; font-size: 20px; font-weight: 800; }
   #login-box p.sub { color: #6B7280; font-size: 13px; margin: 0 0 20px 0; }
-  #login-box label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6B7280;
-    margin: 10px 0 4px 0;
-    text-align: left;
-  }
-  #login-box input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #1F2937;
-    background: #ffffff;
-    box-sizing: border-box;
-  }
-  #login-box input:focus {
-    outline: none;
-    border-color: #4F46E5;
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
-  }
-  #login-box button.login-submit {
-    width: 100%;
-    margin-top: 16px;
-    padding: 12px;
-    background: linear-gradient(135deg, #4F46E5, #7C3AED);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  #login-box label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6B7280; margin: 10px 0 4px 0; text-align: left; }
+  #login-box input { width: 100%; padding: 10px 12px; border: 1.5px solid #E5E7EB; border-radius: 8px; font-size: 14px; color: #1F2937; background: #ffffff; box-sizing: border-box; }
+  #login-box input:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }
+  #login-box button.login-submit { width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, #4F46E5, #7C3AED); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
   #login-box button.login-submit:hover { filter: brightness(110%); }
-  #login-err {
-    display: none;
-    background: #FEF2F2;
-    color: #991B1B;
-    border: 1px solid #FECACA;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-top: 12px;
-    text-align: left;
-  }
+  #login-err { display: none; background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; padding: 10px; border-radius: 8px; font-size: 13px; margin-top: 12px; text-align: left; }
   #login-err.show { display: block; }
-  #login-box .logout-hint {
-    margin-top: 18px;
-    font-size: 11px;
-    color: #9CA3AF;
-  }
-  .logout-btn {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    background: rgba(0,0,0,0.15);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 100;
-    transition: background 0.15s;
-  }
+  #login-box .logout-hint { margin-top: 18px; font-size: 11px; color: #9CA3AF; }
+  .logout-btn { position: fixed; top: 12px; right: 12px; background: rgba(0,0,0,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; z-index: 100; transition: background 0.15s; }
   .logout-btn:hover { background: rgba(0,0,0,0.3); }
-
 </style>
 </head>
 <body>
 
-<!-- ====== LOGIN OVERLAY ====== -->
 <div id="login-overlay">
   <div id="login-box">
-    <img src="data:image/png;base64,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" alt="Fix Wireless" />
+    <div class="fw-logo">FW</div>
     <h2>🔐 Acceso Restringido</h2>
     <p class="sub">Fix Wireless — Generador VPN</p>
     <form onsubmit="event.preventDefault(); tryLogin();">
@@ -289,20 +95,17 @@
       <div id="login-err"></div>
       <button type="submit" class="login-submit">🔓 Ingresar</button>
     </form>
-    <div class="logout-hint">
-      Acceso interno — contacta al administrador si no tienes credenciales
-    </div>
+    <div class="logout-hint">Acceso interno — contacta al administrador si no tienes credenciales</div>
   </div>
 </div>
 <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">🚪 Salir</button>
-<div class="wrap">
 
+<div class="wrap">
 <header>
-  <h1>🛡️ Generador de VPN SSTP</h1>
+  <h1>🛡️ Generador de VPN SSTP <span style="font-size:14px;color:#10B981;font-weight:600;">v2.2 (CGNAT-fix)</span></h1>
   <p>Provisionamiento automático para Mikrotik CHR · <span class="mono">Fix Pagos</span></p>
 </header>
 
-<!-- ========================= CONFIG ========================= -->
 <div class="card">
   <h2>⚙️ Configuración del CHR</h2>
   <div class="banner info">
@@ -310,60 +113,22 @@
     🔐 Las llamadas al CHR pasan por el <b>proxy seguro de Fix Pagos</b> (necesario para saltar el bloqueo CORS de RouterOS).
   </div>
   <div class="row">
-    <div class="col" style="min-width: 260px;">
-      <label>URL del CHR *</label>
-      <input id="cfgUrl" placeholder="http://137.184.69.28" />
-      <div class="muted">Incluye http:// o https:// y el puerto si no es 80/443</div>
-    </div>
-    <div class="col">
-      <label>Usuario API *</label>
-      <input id="cfgUser" placeholder="admin" />
-    </div>
-    <div class="col">
-      <label>Contraseña *</label>
-      <input id="cfgPass" type="password" placeholder="••••••••" />
-    </div>
+    <div class="col" style="min-width: 260px;"><label>URL del CHR *</label><input id="cfgUrl" placeholder="http://137.184.69.28" /><div class="muted">Incluye http:// o https:// y el puerto si no es 80/443</div></div>
+    <div class="col"><label>Usuario API *</label><input id="cfgUser" placeholder="admin" /></div>
+    <div class="col"><label>Contraseña *</label><input id="cfgPass" type="password" placeholder="••••••••" /></div>
   </div>
   <div class="row">
-    <div class="col">
-      <label>IP pública del CHR *</label>
-      <input id="cfgPublicIp" placeholder="137.184.69.28" />
-    </div>
-    <div class="col">
-      <label>Interfaz WAN</label>
-      <input id="cfgWan" placeholder="ether1" />
-    </div>
-    <div class="col">
-      <label>Perfil PPP</label>
-      <input id="cfgProfile" placeholder="default-encryption" />
-    </div>
-    <div class="col">
-      <label>Gateway VPN</label>
-      <input id="cfgLocalAddr" placeholder="10.5.5.1" />
-    </div>
+    <div class="col"><label>IP pública del CHR *</label><input id="cfgPublicIp" placeholder="137.184.69.28" /></div>
+    <div class="col"><label>Interfaz WAN</label><input id="cfgWan" placeholder="ether1" /></div>
+    <div class="col"><label>Perfil PPP</label><input id="cfgProfile" placeholder="default-encryption" /></div>
+    <div class="col"><label>Gateway VPN</label><input id="cfgLocalAddr" placeholder="10.5.5.1" /></div>
   </div>
   <div class="row">
-    <div class="col">
-      <label>Pool desde</label>
-      <input id="cfgPoolFrom" placeholder="10.5.5.2" />
-    </div>
-    <div class="col">
-      <label>Pool hasta</label>
-      <input id="cfgPoolTo" placeholder="10.5.5.254" />
-    </div>
-    <div class="col">
-      <label>Puerto mín.</label>
-      <input id="cfgPortMin" type="number" placeholder="10000" />
-    </div>
-    <div class="col">
-      <label>Puerto máx.</label>
-      <input id="cfgPortMax" type="number" placeholder="30000" />
-    </div>
-    <div class="col">
-      <label>🟡 Alerta "por vencer" (días)</label>
-      <input id="cfgWarnDays" type="number" min="1" max="60" placeholder="7" />
-      <div class="muted">VPNs que vencen dentro de X días</div>
-    </div>
+    <div class="col"><label>Pool desde</label><input id="cfgPoolFrom" placeholder="10.5.5.2" /></div>
+    <div class="col"><label>Pool hasta</label><input id="cfgPoolTo" placeholder="10.5.5.254" /></div>
+    <div class="col"><label>Puerto mín.</label><input id="cfgPortMin" type="number" placeholder="10000" /></div>
+    <div class="col"><label>Puerto máx.</label><input id="cfgPortMax" type="number" placeholder="30000" /></div>
+    <div class="col"><label>🟡 Alerta "por vencer" (días)</label><input id="cfgWarnDays" type="number" min="1" max="60" placeholder="7" /><div class="muted">VPNs que vencen dentro de X días</div></div>
   </div>
   <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
     <button onclick="saveConfig()">💾 Guardar</button>
@@ -372,116 +137,62 @@
   <div id="testResult" style="margin-top: 10px;"></div>
 </div>
 
-<!-- ========================= GENERATE ========================= -->
 <div class="card">
   <h2>🚀 Nueva VPN para cliente</h2>
   <div class="row">
-    <div class="col" style="min-width: 240px;">
-      <label>Nombre del cliente *</label>
-      <input id="genName" placeholder="Ej: zona8, cliente-juan, pueblo-nuevo" />
-      <div class="muted">Solo letras, números y guiones. Sin espacios. <strong>Es el username VPN</strong>.</div>
-    </div>
-    <div class="col" style="min-width: 220px;">
-      <label>👤 Cliente comprador / Grupo</label>
-      <input id="genCustomer" list="customerList" placeholder="Ej: Juan Pérez, Empresa XYZ" />
-      <datalist id="customerList"></datalist>
-      <div class="muted">Persona/empresa que compró. Si compra varias VPNs, repite el mismo nombre para agruparlas.</div>
-    </div>
-    <div class="col" style="min-width: 200px;">
-      <label>Notas (opcional)</label>
-      <input id="genNotes" placeholder="Ej: Router Zona Centro, contacto 55-1234" />
-    </div>
+    <div class="col" style="min-width: 240px;"><label>Nombre del cliente *</label><input id="genName" placeholder="Ej: zona8, cliente-juan, pueblo-nuevo" /><div class="muted">Solo letras, números y guiones. Sin espacios. <strong>Es el username VPN</strong>.</div></div>
+    <div class="col" style="min-width: 220px;"><label>👤 Cliente comprador / Grupo</label><input id="genCustomer" list="customerList" placeholder="Ej: Juan Pérez, Empresa XYZ" /><datalist id="customerList"></datalist><div class="muted">Persona/empresa que compró. Si compra varias VPNs, repite el mismo nombre para agruparlas.</div></div>
+    <div class="col" style="min-width: 200px;"><label>Notas (opcional)</label><input id="genNotes" placeholder="Ej: Router Zona Centro, contacto 55-1234" /></div>
   </div>
   <div class="row">
     <div class="col" style="min-width: 180px;">
       <label>⏳ Duración</label>
       <select id="genMonths" onchange="syncExpiryFromMonths()">
-        <option value="1">1 mes</option>
-        <option value="2">2 meses</option>
-        <option value="3">3 meses</option>
-        <option value="6" selected>6 meses</option>
-        <option value="9">9 meses</option>
-        <option value="12">12 meses (1 año)</option>
-        <option value="18">18 meses</option>
-        <option value="24">24 meses (2 años)</option>
-        <option value="custom">🗓️ Fecha personalizada…</option>
+        <option value="1">1 mes</option><option value="2">2 meses</option><option value="3">3 meses</option>
+        <option value="6" selected>6 meses</option><option value="9">9 meses</option>
+        <option value="12">12 meses (1 año)</option><option value="18">18 meses</option>
+        <option value="24">24 meses (2 años)</option><option value="custom">🗓️ Fecha personalizada…</option>
       </select>
     </div>
-    <div class="col" style="min-width: 180px;">
-      <label>📅 Vence el</label>
-      <input id="genExpiry" type="date" onchange="onExpiryDateChanged()" />
-      <div class="muted">Se calcula automáticamente con la duración</div>
-    </div>
+    <div class="col" style="min-width: 180px;"><label>📅 Vence el</label><input id="genExpiry" type="date" onchange="onExpiryDateChanged()" /><div class="muted">Se calcula automáticamente con la duración</div></div>
   </div>
-  <div style="margin-top: 14px;">
-    <button onclick="generateVpn()" id="btnGen">⚡ Generar VPN</button>
-  </div>
+  <div style="margin-top: 14px;"><button onclick="generateVpn()" id="btnGen">⚡ Generar VPN</button></div>
   <div id="genResult"></div>
 </div>
 
-<!-- ========================= HISTORY ========================= -->
 <div class="card">
   <h2>📜 Historial de VPNs provisionadas</h2>
-
   <div class="stats" id="stats"></div>
-
   <div class="search-row">
     <input id="search" placeholder="🔍 Buscar por nombre, cliente, IP, notas..." oninput="renderHistory()" />
     <select id="sort" onchange="renderHistory()">
-      <option value="date-desc">📅 Más recientes</option>
-      <option value="date-asc">📅 Más antiguos</option>
-      <option value="name-asc">🔤 Nombre A-Z</option>
-      <option value="name-desc">🔤 Nombre Z-A</option>
-      <option value="expiry-asc">⏳ Vence primero</option>
-      <option value="customer-asc">👤 Por cliente comprador</option>
+      <option value="date-desc">📅 Más recientes</option><option value="date-asc">📅 Más antiguos</option>
+      <option value="name-asc">🔤 Nombre A-Z</option><option value="name-desc">🔤 Nombre Z-A</option>
+      <option value="expiry-asc">⏳ Vence primero</option><option value="customer-asc">👤 Por cliente comprador</option>
     </select>
     <button class="secondary small" onclick="exportCsv()">⬇️ CSV</button>
   </div>
-
   <div id="statusFilters" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;"></div>
-
   <div id="historyList"></div>
 </div>
-
 </div>
 
-<!-- ========================= SCRIPT ========================= -->
 <script>
-// ======================= STATE & CONSTANTS =======================
 const LS_CFG = 'fixpagos_vpn_cfg';
 const LS_HIST = 'fixpagos_vpn_history';
-
-// v2.1: Apunta al backend de PRODUCCIÓN (24/7, independiente de créditos de dev)
-// El proxy es necesario para evitar CORS del RouterOS v7 contra el navegador.
-// Si quieres auto-hostearlo, cambia esta URL a tu propio servidor con el mismo endpoint.
 const PROXY_URL = 'https://isp-billing-manager.emergent.host/api/vpn-proxy';
 
 const DEFAULT_CFG = {
-  url: '',
-  user: '',
-  password: '',
-  publicIp: '',
-  wan: 'ether1',
-  profile: 'default-encryption',
-  localAddress: '10.5.5.1',
-  poolFrom: '10.5.5.2',
-  poolTo: '10.5.5.254',
-  portMin: 10000,
-  portMax: 30000,
-  expiryWarningDays: 7,
+  url: '', user: '', password: '', publicIp: '',
+  wan: 'ether1', profile: 'default-encryption',
+  localAddress: '10.5.5.1', poolFrom: '10.5.5.2', poolTo: '10.5.5.254',
+  portMin: 10000, portMax: 30000, expiryWarningDays: 7,
 };
 
-// ======================= UTILS =======================
 function $(id) { return document.getElementById(id); }
-function loadCfg() {
-  try { return { ...DEFAULT_CFG, ...JSON.parse(localStorage.getItem(LS_CFG) || '{}') }; }
-  catch { return { ...DEFAULT_CFG }; }
-}
+function loadCfg() { try { return { ...DEFAULT_CFG, ...JSON.parse(localStorage.getItem(LS_CFG) || '{}') }; } catch { return { ...DEFAULT_CFG }; } }
 function saveCfg(cfg) { localStorage.setItem(LS_CFG, JSON.stringify(cfg)); }
-function getHistory() {
-  try { return JSON.parse(localStorage.getItem(LS_HIST) || '[]'); }
-  catch { return []; }
-}
+function getHistory() { try { return JSON.parse(localStorage.getItem(LS_HIST) || '[]'); } catch { return []; } }
 function setHistory(h) { localStorage.setItem(LS_HIST, JSON.stringify(h)); }
 
 function readCfgFromForm() {
@@ -501,57 +212,23 @@ function readCfgFromForm() {
   };
 }
 function fillForm(cfg) {
-  $('cfgUrl').value = cfg.url;
-  $('cfgUser').value = cfg.user;
-  $('cfgPass').value = cfg.password;
-  $('cfgPublicIp').value = cfg.publicIp;
-  $('cfgWan').value = cfg.wan;
-  $('cfgProfile').value = cfg.profile;
-  $('cfgLocalAddr').value = cfg.localAddress;
-  $('cfgPoolFrom').value = cfg.poolFrom;
-  $('cfgPoolTo').value = cfg.poolTo;
-  $('cfgPortMin').value = cfg.portMin;
-  $('cfgPortMax').value = cfg.portMax;
+  $('cfgUrl').value = cfg.url; $('cfgUser').value = cfg.user; $('cfgPass').value = cfg.password;
+  $('cfgPublicIp').value = cfg.publicIp; $('cfgWan').value = cfg.wan; $('cfgProfile').value = cfg.profile;
+  $('cfgLocalAddr').value = cfg.localAddress; $('cfgPoolFrom').value = cfg.poolFrom; $('cfgPoolTo').value = cfg.poolTo;
+  $('cfgPortMin').value = cfg.portMin; $('cfgPortMax').value = cfg.portMax;
   $('cfgWarnDays').value = cfg.expiryWarningDays || 7;
 }
 
-function authHeader(cfg) {
-  return 'Basic ' + btoa(cfg.user + ':' + cfg.password);
-}
-
-/**
- * Llama al CHR a traves del proxy de Fix Pagos (para evitar CORS).
- * Si `opts.method === 'PUT'` o 'POST', pasa `opts.body` como JSON parseado.
- */
 async function chrFetch(cfg, path, opts = {}) {
   const method = (opts.method || 'GET').toUpperCase();
   let body = null;
-  if (opts.body) {
-    try { body = typeof opts.body === 'string' ? JSON.parse(opts.body) : opts.body; }
-    catch { body = null; }
-  }
-  const payload = {
-    url: cfg.url.replace(/\/$/, ''),
-    user: cfg.user,
-    password: cfg.password,
-    method,
-    path,
-    body,
-  };
+  if (opts.body) { try { body = typeof opts.body === 'string' ? JSON.parse(opts.body) : opts.body; } catch { body = null; } }
+  const payload = { url: cfg.url.replace(/\/$/, ''), user: cfg.user, password: cfg.password, method, path, body };
   let res;
-  try {
-    res = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    throw new Error('No se pudo contactar el proxy de Fix Pagos: ' + e.message);
-  }
+  try { res = await fetch(PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); }
+  catch (e) { throw new Error('No se pudo contactar el proxy de Fix Pagos: ' + e.message); }
   const out = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error('Proxy error: ' + (out.detail || res.statusText));
-  }
+  if (!res.ok) throw new Error('Proxy error: ' + (out.detail || res.statusText));
   if (!out.ok) {
     const raw = typeof out.data === 'object' && out.data !== null ? JSON.stringify(out.data) : String(out.data || '');
     throw new Error('CHR HTTP ' + out.status + ': ' + raw.slice(0, 200));
@@ -559,98 +236,59 @@ async function chrFetch(cfg, path, opts = {}) {
   return out.data;
 }
 
-function ipToNum(ip) {
-  const p = ip.split('.').map(Number);
-  return (p[0]<<24)>>>0 ^ ((p[1]<<16)>>>0) ^ ((p[2]<<8)>>>0) ^ p[3];
-}
-function numToIp(n) {
-  return [(n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255].join('.');
-}
+function ipToNum(ip) { const p = ip.split('.').map(Number); return (p[0]<<24)>>>0 ^ ((p[1]<<16)>>>0) ^ ((p[2]<<8)>>>0) ^ p[3]; }
+function numToIp(n) { return [(n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255].join('.'); }
 
 function randomPassword(len = 10) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-  let out = '';
-  const arr = new Uint8Array(len);
-  crypto.getRandomValues(arr);
+  let out = ''; const arr = new Uint8Array(len); crypto.getRandomValues(arr);
   for (let i = 0; i < len; i++) out += chars[arr[i] % chars.length];
   return out;
 }
+function sanitizeName(s) { return s.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''); }
+function fmtDate(iso) { try { const d = new Date(iso); return d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: '2-digit' }) + ' ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }); } catch { return iso; } }
 
-function sanitizeName(s) {
-  return s.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-}
-
-function fmtDate(iso) {
-  try {
-    const d = new Date(iso);
-    return d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: '2-digit' }) + ' ' +
-           d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-  } catch { return iso; }
-}
-
-// ======================= EXPIRY / STATUS HELPERS =======================
 function addMonthsISO(dateStr, months) {
-  // dateStr: YYYY-MM-DD o Date/ISO; months: integer
   const base = dateStr ? new Date(dateStr) : new Date();
   if (isNaN(base.getTime())) return null;
   const d = new Date(base.getTime());
   const targetMonth = d.getMonth() + months;
   d.setMonth(targetMonth);
-  // Si el día "rebota" al siguiente mes (ej. 31 ene + 1 mes), retrocede al último del mes destino
   if (d.getMonth() !== ((base.getMonth() + months) % 12 + 12) % 12) d.setDate(0);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const y = d.getFullYear(); const m = String(d.getMonth() + 1).padStart(2, '0'); const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
-function daysBetween(aISO, bISO) {
-  const a = new Date(aISO);
-  const b = new Date(bISO);
-  return Math.floor((a.getTime() - b.getTime()) / 86400000);
-}
-function daysUntilExpiry(entry) {
-  if (!entry || !entry.expiresAt) return null;
-  return daysBetween(entry.expiresAt, new Date().toISOString().slice(0,10));
-}
+function daysBetween(aISO, bISO) { return Math.floor((new Date(aISO).getTime() - new Date(bISO).getTime()) / 86400000); }
+function daysUntilExpiry(entry) { if (!entry || !entry.expiresAt) return null; return daysBetween(entry.expiresAt, new Date().toISOString().slice(0,10)); }
 function computeStatus(entry, cfg) {
   if (entry.status === 'suspended') return 'suspended';
   const warnDays = (cfg && cfg.expiryWarningDays) || 7;
   const d = daysUntilExpiry(entry);
-  if (d === null) return 'active'; // sin fecha de expiración = activo
+  if (d === null) return 'active';
   if (d < 0) return 'expired';
   if (d <= warnDays) return 'soon';
   return 'active';
 }
 function statusBadge(status) {
   const map = {
-    active:    { emoji: '🟢', label: 'Activo',      bg: '#DCFCE7', fg: '#065F46' },
-    soon:      { emoji: '🟡', label: 'Por vencer',  bg: '#FEF3C7', fg: '#78350F' },
-    expired:   { emoji: '🔴', label: 'Vencido',     bg: '#FEE2E2', fg: '#7F1D1D' },
-    suspended: { emoji: '⚫', label: 'Suspendido',  bg: '#F3F4F6', fg: '#374151' },
+    active: { emoji: '🟢', label: 'Activo', bg: '#DCFCE7', fg: '#065F46' },
+    soon: { emoji: '🟡', label: 'Por vencer', bg: '#FEF3C7', fg: '#78350F' },
+    expired: { emoji: '🔴', label: 'Vencido', bg: '#FEE2E2', fg: '#7F1D1D' },
+    suspended: { emoji: '⚫', label: 'Suspendido', bg: '#F3F4F6', fg: '#374151' },
   };
   const s = map[status] || map.active;
   return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${s.bg};color:${s.fg};">${s.emoji} ${s.label}</span>`;
 }
 function syncExpiryFromMonths() {
-  const sel = $('genMonths');
-  const inp = $('genExpiry');
-  if (!sel || !inp) return;
-  const v = sel.value;
-  if (v === 'custom') { inp.focus(); return; }
-  const months = parseInt(v, 10);
-  inp.value = addMonthsISO(new Date().toISOString(), months);
+  const sel = $('genMonths'); const inp = $('genExpiry'); if (!sel || !inp) return;
+  const v = sel.value; if (v === 'custom') { inp.focus(); return; }
+  inp.value = addMonthsISO(new Date().toISOString(), parseInt(v, 10));
 }
-function onExpiryDateChanged() {
-  const sel = $('genMonths');
-  if (sel) sel.value = 'custom';
-}
+function onExpiryDateChanged() { const sel = $('genMonths'); if (sel) sel.value = 'custom'; }
 
-// ======================= CORE LOGIC =======================
 async function testConnection() {
-  const btn = $('btnTest');
-  const box = $('testResult');
-  btn.disabled = true;
-  box.innerHTML = '<div class="banner info">⏳ Probando...</div>';
+  const btn = $('btnTest'); const box = $('testResult');
+  btn.disabled = true; box.innerHTML = '<div class="banner info">⏳ Probando...</div>';
   try {
     const cfg = readCfgFromForm();
     if (!cfg.url || !cfg.user) throw new Error('Falta URL o usuario');
@@ -658,162 +296,93 @@ async function testConnection() {
     box.innerHTML = '<div class="banner success">✅ Conectado — Identidad: <b>' + (data.name || '(sin nombre)') + '</b></div>';
     saveCfg(cfg);
   } catch (e) {
-    let hint = '';
-    if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
-      hint = '<br><br><b>Posibles causas:</b><br>• CORS bloqueado → abre la opción "Desactivar CORS" en tu navegador o usa Firefox<br>• CHR sin REST API → verifica <code>/ip service print</code><br>• URL incorrecta';
-    }
-    box.innerHTML = '<div class="banner error">❌ ' + e.message + hint + '</div>';
-  } finally {
-    btn.disabled = false;
-  }
+    box.innerHTML = '<div class="banner error">❌ ' + e.message + '</div>';
+  } finally { btn.disabled = false; }
 }
-
 function saveConfig() {
-  const cfg = readCfgFromForm();
-  saveCfg(cfg);
+  saveCfg(readCfgFromForm());
   const box = $('testResult');
   box.innerHTML = '<div class="banner success">💾 Configuración guardada localmente.</div>';
   setTimeout(() => { if (box.innerHTML.includes('Configuración guardada')) box.innerHTML = ''; }, 3000);
 }
 
-async function getUsedIps(cfg) {
-  const secrets = await chrFetch(cfg, '/rest/ppp/secret');
-  return new Set((secrets || []).map(s => s['remote-address']).filter(Boolean));
-}
 async function getUsedPorts(cfg) {
   const nats = await chrFetch(cfg, '/rest/ip/firewall/nat');
   const used = new Set();
   (nats || []).forEach(n => {
     if (n['dst-port']) {
-      // may be single port or range
       String(n['dst-port']).split(',').forEach(part => {
-        if (part.includes('-')) {
-          const [a, b] = part.split('-').map(x => parseInt(x, 10));
-          for (let i = a; i <= b; i++) used.add(i);
-        } else {
-          const p = parseInt(part, 10);
-          if (!isNaN(p)) used.add(p);
-        }
+        if (part.includes('-')) { const [a, b] = part.split('-').map(x => parseInt(x, 10)); for (let i = a; i <= b; i++) used.add(i); }
+        else { const p = parseInt(part, 10); if (!isNaN(p)) used.add(p); }
       });
     }
   });
   return used;
 }
-
 function nextFreeIp(cfg, used) {
-  const from = ipToNum(cfg.poolFrom);
-  const to = ipToNum(cfg.poolTo);
-  for (let n = from; n <= to; n++) {
-    const ip = numToIp(n);
-    if (!used.has(ip)) return ip;
-  }
+  const from = ipToNum(cfg.poolFrom); const to = ipToNum(cfg.poolTo);
+  for (let n = from; n <= to; n++) { const ip = numToIp(n); if (!used.has(ip)) return ip; }
   throw new Error('Pool de IPs agotado (' + cfg.poolFrom + '–' + cfg.poolTo + ')');
 }
 function nextFreePortBlock(cfg, used, count = 3) {
   for (let p = cfg.portMin; p <= cfg.portMax - count + 1; p++) {
-    let ok = true;
-    for (let i = 0; i < count; i++) if (used.has(p + i)) { ok = false; break; }
+    let ok = true; for (let i = 0; i < count; i++) if (used.has(p + i)) { ok = false; break; }
     if (ok) return p;
   }
   throw new Error('No hay ' + count + ' puertos consecutivos libres en ' + cfg.portMin + '–' + cfg.portMax);
 }
 
 async function generateVpn() {
-  const btn = $('btnGen');
-  const box = $('genResult');
+  const btn = $('btnGen'); const box = $('genResult');
   btn.disabled = true;
   box.innerHTML = '<div class="banner info"><span class="spinner"></span> &nbsp;Consultando CHR y creando VPN...</div>';
   try {
-    const cfg = readCfgFromForm();
-    saveCfg(cfg);
+    const cfg = readCfgFromForm(); saveCfg(cfg);
     const rawName = $('genName').value;
     const name = sanitizeName(rawName);
     if (!name) throw new Error('Falta el nombre del cliente');
     if (!cfg.password) throw new Error('Falta contraseña API');
 
-    // Verify no duplicate in CHR
     const secrets = await chrFetch(cfg, '/rest/ppp/secret');
-    if ((secrets || []).some(s => s.name === name)) {
-      throw new Error('Ya existe un secret llamado "' + name + '" en el CHR. Usa otro nombre o bórralo primero.');
-    }
+    if ((secrets || []).some(s => s.name === name)) throw new Error('Ya existe un secret llamado "' + name + '" en el CHR.');
 
     const usedIps = new Set((secrets || []).map(s => s['remote-address']).filter(Boolean));
     const assignedIp = nextFreeIp(cfg, usedIps);
-
     const usedPorts = await getUsedPorts(cfg);
     const basePort = nextFreePortBlock(cfg, usedPorts, 3);
-    const portWeb = basePort;
-    const portWinbox = basePort + 1;
-    const portApi = basePort + 2;
-
+    const portWeb = basePort, portWinbox = basePort + 1, portApi = basePort + 2;
     const password = randomPassword(10);
 
     // 1) Create PPP secret
+    // v2.2: caller-id="" + only-one=no para evitar que clientes detrás del
+    // mismo CGNAT (misma IP pública) se pateen entre sí al reconectarse.
     const secret = await chrFetch(cfg, '/rest/ppp/secret', {
       method: 'PUT',
       body: JSON.stringify({
         name, password, profile: cfg.profile, service: 'sstp',
         'local-address': cfg.localAddress,
         'remote-address': assignedIp,
+        'caller-id': '',
+        'only-one': 'no',
         comment: 'vpn-auto | ' + name + ' | ' + new Date().toISOString().slice(0,10),
       }),
     });
 
-    // 2) NAT Web
-    const natWeb = await chrFetch(cfg, '/rest/ip/firewall/nat', {
-      method: 'PUT',
-      body: JSON.stringify({
-        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
-        'in-interface': cfg.wan,
-        'dst-address': cfg.publicIp,
-        'dst-port': String(portWeb),
-        'to-addresses': assignedIp, 'to-ports': '80',
-        comment: 'vpn-auto-web | ' + name,
-      }),
-    });
-    // 3) NAT Winbox
-    const natWinbox = await chrFetch(cfg, '/rest/ip/firewall/nat', {
-      method: 'PUT',
-      body: JSON.stringify({
-        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
-        'in-interface': cfg.wan,
-        'dst-address': cfg.publicIp,
-        'dst-port': String(portWinbox),
-        'to-addresses': assignedIp, 'to-ports': '8291',
-        comment: 'vpn-auto-winbox | ' + name,
-      }),
-    });
-    // 4) NAT API
-    const natApi = await chrFetch(cfg, '/rest/ip/firewall/nat', {
-      method: 'PUT',
-      body: JSON.stringify({
-        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
-        'in-interface': cfg.wan,
-        'dst-address': cfg.publicIp,
-        'dst-port': String(portApi),
-        'to-addresses': assignedIp, 'to-ports': '8728',
-        comment: 'vpn-auto-api | ' + name,
-      }),
-    });
+    const natWeb = await chrFetch(cfg, '/rest/ip/firewall/nat', { method: 'PUT', body: JSON.stringify({ chain: 'dstnat', action: 'dst-nat', protocol: 'tcp', 'in-interface': cfg.wan, 'dst-address': cfg.publicIp, 'dst-port': String(portWeb), 'to-addresses': assignedIp, 'to-ports': '80', comment: 'vpn-auto-web | ' + name }) });
+    const natWinbox = await chrFetch(cfg, '/rest/ip/firewall/nat', { method: 'PUT', body: JSON.stringify({ chain: 'dstnat', action: 'dst-nat', protocol: 'tcp', 'in-interface': cfg.wan, 'dst-address': cfg.publicIp, 'dst-port': String(portWinbox), 'to-addresses': assignedIp, 'to-ports': '8291', comment: 'vpn-auto-winbox | ' + name }) });
+    const natApi = await chrFetch(cfg, '/rest/ip/firewall/nat', { method: 'PUT', body: JSON.stringify({ chain: 'dstnat', action: 'dst-nat', protocol: 'tcp', 'in-interface': cfg.wan, 'dst-address': cfg.publicIp, 'dst-port': String(portApi), 'to-addresses': assignedIp, 'to-ports': '8728', comment: 'vpn-auto-api | ' + name }) });
 
-    const clientScript = buildClientScript({
-      publicIp: cfg.publicIp, profile: cfg.profile, name, password,
-    });
-
+    const clientScript = buildClientScript({ publicIp: cfg.publicIp, profile: cfg.profile, name, password });
     const entry = {
       id: 'vpn_' + Date.now(),
       createdAt: new Date().toISOString(),
-      expiresAt: $('genExpiry').value || null,  // YYYY-MM-DD
-      status: 'active',                          // active | suspended
-      clientName: rawName.trim(),
-      sanitizedName: name,
-      customer: ($('genCustomer') ? $('genCustomer').value.trim() : ''),  // v2: cliente comprador
+      expiresAt: $('genExpiry').value || null,
+      status: 'active',
+      clientName: rawName.trim(), sanitizedName: name,
+      customer: ($('genCustomer') ? $('genCustomer').value.trim() : ''),
       notes: $('genNotes').value.trim(),
-      publicIp: cfg.publicIp,
-      assignedIp,
-      profile: cfg.profile,
-      user: name,
-      password,
+      publicIp: cfg.publicIp, assignedIp, profile: cfg.profile,
+      user: name, password,
       portWeb, portWinbox, portApi,
       pppSecretId: secret['.id'] || secret.id,
       natWebId: natWeb['.id'] || natWeb.id,
@@ -821,38 +390,24 @@ async function generateVpn() {
       natApiId: natApi['.id'] || natApi.id,
       clientScript,
     };
-    const h = getHistory();
-    h.unshift(entry);
-    setHistory(h);
-
+    const h = getHistory(); h.unshift(entry); setHistory(h);
     renderResult(entry);
-    $('genName').value = '';
-    $('genNotes').value = '';
-    // No limpiar genCustomer — facilita registrar varias VPNs del mismo cliente seguidas
-    renderHistory();
-    refreshCustomerList();
+    $('genName').value = ''; $('genNotes').value = '';
+    renderHistory(); refreshCustomerList();
   } catch (e) {
     box.innerHTML = '<div class="banner error">❌ ' + e.message + '</div>';
-  } finally {
-    btn.disabled = false;
-  }
+  } finally { btn.disabled = false; }
 }
 
 function buildClientScript({ publicIp, profile, name, password }) {
   const ifaceName = 'VPN-FIXPAGOS';
-  return `# Fix Pagos - VPN SSTP auto-provisionada\n` +
-         `# Pegar esta linea en el terminal del Mikrotik cliente:\n\n` +
-         `/interface sstp-client add connect-to=${publicIp} disabled=no name=${ifaceName} profile=${profile} user=${name} password=${password}\n\n` +
-         `# Verificar (debe aparecer connected tras unos segundos):\n` +
-         `# /interface sstp-client print`;
+  return `# Fix Pagos - VPN SSTP auto-provisionada\n# Pegar esta linea en el terminal del Mikrotik cliente:\n\n/interface sstp-client add connect-to=${publicIp} disabled=no name=${ifaceName} profile=${profile} user=${name} password=${password}\n\n# Verificar (debe aparecer connected tras unos segundos):\n# /interface sstp-client print`;
 }
 
 function renderResult(e) {
   const cfg = loadCfg();
   const st = computeStatus(e, cfg);
-  const expiryDisplay = e.expiresAt
-    ? new Date(e.expiresAt + 'T12:00:00').toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'})
-    : 'sin fecha';
+  const expiryDisplay = e.expiresAt ? new Date(e.expiresAt + 'T12:00:00').toLocaleDateString('es-MX', {day:'2-digit',month:'long',year:'numeric'}) : 'sin fecha';
   $('genResult').innerHTML = `
     <div class="banner success">✅ VPN creada para <b>${escapeHtml(e.clientName)}</b> · ${statusBadge(st)} · Vence: <b>${expiryDisplay}</b></div>
     <div class="result-grid">
@@ -868,84 +423,35 @@ function renderResult(e) {
     <div class="actions" style="margin-top: 10px;">
       <button onclick="copyScript('${e.id}')">📋 Copiar script</button>
       <button class="whatsapp" onclick="shareWhatsApp('${e.id}')">💬 WhatsApp</button>
-    </div>
-  `;
+    </div>`;
 }
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function copyScript(id) {
-  const e = getHistory().find(x => x.id === id);
-  if (!e) return;
-  navigator.clipboard.writeText(e.clientScript).then(() => {
-    alert('Script copiado al portapapeles');
-  });
-}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function copyScript(id) { const e = getHistory().find(x => x.id === id); if (!e) return; navigator.clipboard.writeText(e.clientScript).then(() => alert('Script copiado al portapapeles')); }
 function shareWhatsApp(id) {
-  const e = getHistory().find(x => x.id === id);
-  if (!e) return;
-  const text = [
-    '🛡️ VPN SSTP - ' + e.clientName,
-    '',
-    '• Usuario: ' + e.user,
-    '• Contraseña: ' + e.password,
-    '• IP: ' + e.assignedIp,
-    '• Puertos: Web=' + e.portWeb + ', Winbox=' + e.portWinbox + ', API=' + e.portApi,
-    '',
-    'Script para pegar en el Mikrotik cliente:',
-    '',
-    e.clientScript,
-  ].join('\n');
+  const e = getHistory().find(x => x.id === id); if (!e) return;
+  const text = ['🛡️ VPN SSTP - ' + e.clientName, '', '• Usuario: ' + e.user, '• Contraseña: ' + e.password, '• IP: ' + e.assignedIp, '• Puertos: Web=' + e.portWeb + ', Winbox=' + e.portWinbox + ', API=' + e.portApi, '', 'Script para pegar en el Mikrotik cliente:', '', e.clientScript].join('\n');
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
-// ======================= HISTORY UI =======================
 let __statusFilter = 'all';
 function setStatusFilter(f) { __statusFilter = f; renderHistory(); }
-
-// v2: filtro por cliente comprador (chip clickable)
 let __customerFilter = '';
 function setCustomerFilter(c) { __customerFilter = c || ''; renderHistory(); window.scrollTo({ top: document.querySelector('#search').offsetTop - 80, behavior:'smooth'}); }
 function clearCustomerFilter() { __customerFilter = ''; renderHistory(); }
-
-// v2: refrescar datalist de clientes para autocomplete
 function refreshCustomerList() {
-  const list = document.getElementById('customerList');
-  if (!list) return;
+  const list = document.getElementById('customerList'); if (!list) return;
   const customers = Array.from(new Set(getHistory().map(e => (e.customer || '').trim()).filter(Boolean))).sort();
   list.innerHTML = customers.map(c => '<option value="' + c.replace(/"/g, '&quot;') + '">').join('');
 }
 
 function renderHistory() {
-  const list = $('historyList');
-  const h = getHistory();
-  const cfg = loadCfg();
-  const q = $('search').value.trim().toLowerCase();
-  const sort = $('sort').value;
-
-  // Compute status for each entry
+  const list = $('historyList'); const h = getHistory(); const cfg = loadCfg();
+  const q = $('search').value.trim().toLowerCase(); const sort = $('sort').value;
   const withStatus = h.map(e => ({ ...e, _status: computeStatus(e, cfg) }));
-
-  // Apply status filter
   let filtered = withStatus;
-  if (__statusFilter !== 'all') {
-    filtered = filtered.filter(e => e._status === __statusFilter);
-  }
-  if (q) {
-    filtered = filtered.filter(e =>
-      (e.clientName || '').toLowerCase().includes(q) ||
-      (e.user || '').toLowerCase().includes(q) ||
-      (e.customer || '').toLowerCase().includes(q) ||
-      (e.assignedIp || '').includes(q) ||
-      (e.notes || '').toLowerCase().includes(q)
-    );
-  }
-  // Filtro adicional por cliente comprador exacto (botón en el chip de cliente)
-  if (__customerFilter) {
-    filtered = filtered.filter(e => (e.customer || '').toLowerCase() === __customerFilter.toLowerCase());
-  }
+  if (__statusFilter !== 'all') filtered = filtered.filter(e => e._status === __statusFilter);
+  if (q) filtered = filtered.filter(e => (e.clientName || '').toLowerCase().includes(q) || (e.user || '').toLowerCase().includes(q) || (e.customer || '').toLowerCase().includes(q) || (e.assignedIp || '').includes(q) || (e.notes || '').toLowerCase().includes(q));
+  if (__customerFilter) filtered = filtered.filter(e => (e.customer || '').toLowerCase() === __customerFilter.toLowerCase());
   filtered.sort((a, b) => {
     if (sort === 'date-desc') return (b.createdAt || '').localeCompare(a.createdAt || '');
     if (sort === 'date-asc') return (a.createdAt || '').localeCompare(b.createdAt || '');
@@ -955,203 +461,99 @@ function renderHistory() {
     if (sort === 'customer-asc') return (a.customer || 'zzzz').localeCompare(b.customer || 'zzzz');
     return 0;
   });
-
-  // Counts by status
   const counts = { all: h.length, active: 0, soon: 0, expired: 0, suspended: 0 };
   withStatus.forEach(e => { counts[e._status] = (counts[e._status] || 0) + 1; });
-
-  // Status filter pills
-  const pill = (key, emoji, label, color) => `
-    <button class="small" style="
-      padding:6px 12px;
-      background:${__statusFilter===key ? color : '#fff'};
-      color:${__statusFilter===key ? '#fff' : color};
-      border:1.5px solid ${color};
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-    " onclick="setStatusFilter('${key}')">${emoji} ${label} <b>(${counts[key]||0})</b></button>
-  `;
-  $('statusFilters').innerHTML =
-    pill('all', '📋', 'Todos', '#1F5BCC') +
-    pill('active', '🟢', 'Activos', '#16A34A') +
-    pill('soon', '🟡', 'Por vencer', '#F59E0B') +
-    pill('expired', '🔴', 'Vencidos', '#DC2626') +
-    pill('suspended', '⚫', 'Suspendidos', '#6B7280');
-
-  // Stats
+  const pill = (key, emoji, label, color) => `<button class="small" style="padding:6px 12px;background:${__statusFilter===key ? color : '#fff'};color:${__statusFilter===key ? '#fff' : color};border:1.5px solid ${color};border-radius: 999px;font-weight: 600;cursor: pointer;" onclick="setStatusFilter('${key}')">${emoji} ${label} <b>(${counts[key]||0})</b></button>`;
+  $('statusFilters').innerHTML = pill('all', '📋', 'Todos', '#1F5BCC') + pill('active', '🟢', 'Activos', '#16A34A') + pill('soon', '🟡', 'Por vencer', '#F59E0B') + pill('expired', '🔴', 'Vencidos', '#DC2626') + pill('suspended', '⚫', 'Suspendidos', '#6B7280');
   $('stats').innerHTML = `
     <div class="stat"><div class="n">${h.length}</div><div class="l">VPNs totales</div></div>
     <div class="stat" style="background: linear-gradient(135deg, #16A34A, #22C55E)"><div class="n">${counts.active||0}</div><div class="l">🟢 Activos</div></div>
     <div class="stat" style="background: linear-gradient(135deg, #F59E0B, #FBBF24)"><div class="n">${counts.soon||0}</div><div class="l">🟡 Por vencer</div></div>
     <div class="stat" style="background: linear-gradient(135deg, #DC2626, #F87171)"><div class="n">${counts.expired||0}</div><div class="l">🔴 Vencidos</div></div>
-    <div class="stat" style="background: linear-gradient(135deg, #6B7280, #9CA3AF)"><div class="n">${counts.suspended||0}</div><div class="l">⚫ Suspendidos</div></div>
-  `;
-
-  if (!filtered.length) {
-    list.innerHTML = '<div class="banner info">' + (q || __statusFilter!=='all' ? 'Sin resultados con los filtros actuales.' : 'Aún no has generado ninguna VPN. Llena el formulario de arriba.') + '</div>';
-    return;
-  }
-
-  list.innerHTML = `
-    ${__customerFilter ? '<div class="banner info" style="background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;"><div>👤 Filtrando por cliente: <b>' + escapeHtml(__customerFilter) + '</b> — <b>' + filtered.length + '</b> VPN(s) en este grupo</div><button class="small secondary" onclick="clearCustomerFilter()">✖ Quitar filtro</button></div>' : ''}
-    <div style="overflow-x: auto;">
-    <table>
-      <thead>
-        <tr>
-          <th>Estado</th>
-          <th>Cliente</th>
-          <th class="hide-mobile">Usuario</th>
-          <th>IP</th>
-          <th>Vence</th>
-          <th class="hide-mobile">Puertos</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${filtered.map(e => {
-          const st = e._status;
-          const dLeft = daysUntilExpiry(e);
-          let expiryStr = '—';
-          if (e.expiresAt) {
-            const formatted = new Date(e.expiresAt + 'T12:00:00').toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'2-digit'});
-            let subtitle = '';
-            if (st === 'suspended') subtitle = e.suspendedAt ? 'susp. ' + fmtDate(e.suspendedAt).split(' ')[0] : '';
-            else if (dLeft !== null && dLeft < 0) subtitle = 'hace ' + Math.abs(dLeft) + 'd';
-            else if (dLeft !== null) subtitle = 'en ' + dLeft + 'd';
-            expiryStr = `<b>${formatted}</b>${subtitle?'<div class="muted" style="margin-top:2px">'+subtitle+'</div>':''}`;
-          }
-          // Action buttons depend on status
-          let extraBtns = '';
-          if (st === 'suspended') {
-            extraBtns = `<button class="small" style="background:#16A34A;color:#fff;" onclick="reactivateVpn('${e.id}')" title="Reactivar">✅</button>`;
-          } else {
-            extraBtns = `<button class="small" style="background:#F59E0B;color:#fff;" onclick="renewVpn('${e.id}')" title="Renovar fecha">📅</button>
-                         <button class="small" style="background:#6B7280;color:#fff;" onclick="suspendVpn('${e.id}')" title="Suspender (borrar del CHR)">🚫</button>`;
-          }
-          return `
-            <tr>
-              <td>${statusBadge(st)}</td>
-              <td>
-                <b>${escapeHtml(e.clientName)}</b>
-                ${e.customer ? '<div style="margin-top:3px;"><a onclick="setCustomerFilter(\'' + escapeHtml(e.customer).replace(/'/g, "\\'") + '\')" style="background:#EDE9FE;color:#5B21B6;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;display:inline-block;">👤 ' + escapeHtml(e.customer) + '</a></div>' : ''}
-                ${e.notes ? '<div class="muted" style="margin-top:2px">' + escapeHtml(e.notes) + '</div>' : ''}
-              </td>
-              <td class="mono hide-mobile">${e.user}</td>
-              <td class="mono">${e.assignedIp}</td>
-              <td>${expiryStr}</td>
-              <td class="hide-mobile">
-                <span class="chip">W:${e.portWeb}</span>
-                <span class="chip">X:${e.portWinbox}</span>
-                <span class="chip">A:${e.portApi}</span>
-              </td>
-              <td>
-                <div class="actions">
-                  <button class="secondary small" onclick="viewEntry('${e.id}')" title="Ver">👁️</button>
-                  <button class="whatsapp small" onclick="shareWhatsApp('${e.id}')" title="WhatsApp">💬</button>
-                  ${extraBtns}
-                  <button class="danger small" onclick="deleteEntry('${e.id}')" title="Borrar permanentemente">🗑️</button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('')}
-      </tbody>
-    </table>
-    </div>
-  `;
+    <div class="stat" style="background: linear-gradient(135deg, #6B7280, #9CA3AF)"><div class="n">${counts.suspended||0}</div><div class="l">⚫ Suspendidos</div></div>`;
+  if (!filtered.length) { list.innerHTML = '<div class="banner info">' + (q || __statusFilter!=='all' ? 'Sin resultados con los filtros actuales.' : 'Aún no has generado ninguna VPN. Llena el formulario de arriba.') + '</div>'; return; }
+  list.innerHTML = `${__customerFilter ? '<div class="banner info" style="background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;"><div>👤 Filtrando por cliente: <b>' + escapeHtml(__customerFilter) + '</b> — <b>' + filtered.length + '</b> VPN(s) en este grupo</div><button class="small secondary" onclick="clearCustomerFilter()">✖ Quitar filtro</button></div>' : ''}
+    <div style="overflow-x: auto;"><table>
+      <thead><tr><th>Estado</th><th>Cliente</th><th class="hide-mobile">Usuario</th><th>IP</th><th>Vence</th><th class="hide-mobile">Puertos</th><th>Acciones</th></tr></thead>
+      <tbody>${filtered.map(e => {
+        const st = e._status; const dLeft = daysUntilExpiry(e); let expiryStr = '—';
+        if (e.expiresAt) {
+          const formatted = new Date(e.expiresAt + 'T12:00:00').toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'2-digit'});
+          let subtitle = '';
+          if (st === 'suspended') subtitle = e.suspendedAt ? 'susp. ' + fmtDate(e.suspendedAt).split(' ')[0] : '';
+          else if (dLeft !== null && dLeft < 0) subtitle = 'hace ' + Math.abs(dLeft) + 'd';
+          else if (dLeft !== null) subtitle = 'en ' + dLeft + 'd';
+          expiryStr = `<b>${formatted}</b>${subtitle?'<div class="muted" style="margin-top:2px">'+subtitle+'</div>':''}`;
+        }
+        let extraBtns = st === 'suspended' ? `<button class="small" style="background:#16A34A;color:#fff;" onclick="reactivateVpn('${e.id}')" title="Reactivar">✅</button>` : `<button class="small" style="background:#F59E0B;color:#fff;" onclick="renewVpn('${e.id}')" title="Renovar fecha">📅</button><button class="small" style="background:#6B7280;color:#fff;" onclick="suspendVpn('${e.id}')" title="Suspender (borrar del CHR)">🚫</button>`;
+        return `<tr>
+          <td>${statusBadge(st)}</td>
+          <td><b>${escapeHtml(e.clientName)}</b>${e.customer ? '<div style="margin-top:3px;"><a onclick="setCustomerFilter(\'' + escapeHtml(e.customer).replace(/'/g, "\\'") + '\')" style="background:#EDE9FE;color:#5B21B6;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;display:inline-block;">👤 ' + escapeHtml(e.customer) + '</a></div>' : ''}${e.notes ? '<div class="muted" style="margin-top:2px">' + escapeHtml(e.notes) + '</div>' : ''}</td>
+          <td class="mono hide-mobile">${e.user}</td>
+          <td class="mono">${e.assignedIp}</td>
+          <td>${expiryStr}</td>
+          <td class="hide-mobile"><span class="chip">W:${e.portWeb}</span> <span class="chip">X:${e.portWinbox}</span> <span class="chip">A:${e.portApi}</span></td>
+          <td><div class="actions">
+            <button class="secondary small" onclick="viewEntry('${e.id}')" title="Ver">👁️</button>
+            <button class="whatsapp small" onclick="shareWhatsApp('${e.id}')" title="WhatsApp">💬</button>
+            ${extraBtns}
+            <button class="danger small" onclick="deleteEntry('${e.id}')" title="Borrar permanentemente">🗑️</button>
+          </div></td>
+        </tr>`;
+      }).join('')}</tbody></table></div>`;
 }
 
-// ========== SUSPEND: borra del CHR secret + 3 NATs, mantiene historial ==========
 async function suspendVpn(id) {
-  const h = getHistory();
-  const e = h.find(x => x.id === id);
-  if (!e) return;
+  const h = getHistory(); const e = h.find(x => x.id === id); if (!e) return;
   if (e.status === 'suspended') { alert('Ya está suspendida'); return; }
-  if (!confirm('🚫 Suspender VPN "' + e.clientName + '"?\n\n' +
-    '• Se eliminará el PPP secret y los 3 NATs del CHR.\n' +
-    '• Se conservará el registro completo en el historial.\n' +
-    '• Podrás reactivarla después con las mismas credenciales.')) return;
+  if (!confirm('🚫 Suspender VPN "' + e.clientName + '"?\n\n• Se eliminará del CHR.\n• Se conservará en el historial.\n• Podrás reactivarla después.')) return;
   try {
     const cfg = readCfgFromForm();
     if (!cfg.password) throw new Error('Falta la contraseña API del CHR');
     const errors = [];
-    for (const [path, idKey] of [
-      ['/rest/ppp/secret/', 'pppSecretId'],
-      ['/rest/ip/firewall/nat/', 'natWebId'],
-      ['/rest/ip/firewall/nat/', 'natWinboxId'],
-      ['/rest/ip/firewall/nat/', 'natApiId'],
-    ]) {
+    for (const [path, idKey] of [['/rest/ppp/secret/', 'pppSecretId'], ['/rest/ip/firewall/nat/', 'natWebId'], ['/rest/ip/firewall/nat/', 'natWinboxId'], ['/rest/ip/firewall/nat/', 'natApiId']]) {
       if (!e[idKey]) continue;
-      try { await chrFetch(cfg, path + encodeURIComponent(e[idKey]), { method: 'DELETE' }); }
-      catch (err) { errors.push(idKey + ': ' + err.message); }
+      try { await chrFetch(cfg, path + encodeURIComponent(e[idKey]), { method: 'DELETE' }); } catch (err) { errors.push(idKey + ': ' + err.message); }
     }
-    // Marcar como suspendido, conservando credenciales y puertos
-    e.status = 'suspended';
-    e.suspendedAt = new Date().toISOString();
-    // Guardar IDs anteriores para referencia (pero ya no existen en CHR)
-    e.pppSecretId = null;
-    e.natWebId = null;
-    e.natWinboxId = null;
-    e.natApiId = null;
-    setHistory(h);
-    renderHistory();
-    if (errors.length) alert('Suspendido, pero con avisos del CHR:\n' + errors.join('\n'));
-  } catch (err) {
-    alert('❌ Error al suspender: ' + err.message);
-  }
+    e.status = 'suspended'; e.suspendedAt = new Date().toISOString();
+    e.pppSecretId = null; e.natWebId = null; e.natWinboxId = null; e.natApiId = null;
+    setHistory(h); renderHistory();
+    if (errors.length) alert('Suspendido con avisos:\n' + errors.join('\n'));
+  } catch (err) { alert('❌ Error: ' + err.message); }
 }
 
-// ========== REACTIVATE: re-crea en el CHR con las mismas creds + extiende fecha ==========
 async function reactivateVpn(id) {
-  const h = getHistory();
-  const e = h.find(x => x.id === id);
-  if (!e) return;
+  const h = getHistory(); const e = h.find(x => x.id === id); if (!e) return;
   if (e.status !== 'suspended') { alert('Esta VPN no está suspendida'); return; }
-
-  // Preguntar meses a extender (1-12)
-  const inp = prompt(
-    '✅ Reactivar VPN "' + e.clientName + '"\n\n' +
-    '¿Cuántos meses extender desde hoy?\n' +
-    '(1 a 12)',
-    '1'
-  );
+  const inp = prompt('✅ Reactivar VPN "' + e.clientName + '"\n\n¿Cuántos meses extender desde hoy? (1 a 12)', '1');
   if (inp === null) return;
   const months = parseInt(inp, 10);
-  if (isNaN(months) || months < 1 || months > 12) {
-    alert('Ingresa un número entre 1 y 12'); return;
-  }
-
+  if (isNaN(months) || months < 1 || months > 12) { alert('Ingresa un número entre 1 y 12'); return; }
   try {
     const cfg = readCfgFromForm();
     if (!cfg.password) throw new Error('Falta la contraseña API del CHR');
-
-    // Verificar que no exista ya con ese nombre (por si se reactivó manualmente antes)
     const secrets = await chrFetch(cfg, '/rest/ppp/secret');
     const existing = (secrets || []).find(s => s.name === e.sanitizedName || s.name === e.user);
     if (existing) {
-      if (!confirm('Ya existe en el CHR un secret llamado "' + existing.name + '".\n\n¿Borrarlo y recrear con las credenciales guardadas?')) return;
+      if (!confirm('Ya existe en el CHR un secret "' + existing.name + '".\n\n¿Borrarlo y recrear?')) return;
       await chrFetch(cfg, '/rest/ppp/secret/' + encodeURIComponent(existing['.id']), { method: 'DELETE' });
     }
-
-    // Check IP libre (si la IP original está tomada, asignar una nueva)
     const usedIps = new Set((secrets || []).filter(s => !existing || s['.id']!==existing['.id']).map(s => s['remote-address']).filter(Boolean));
     let assignedIp = e.assignedIp;
     if (usedIps.has(assignedIp)) {
       assignedIp = nextFreeIp(cfg, usedIps);
-      if (!confirm('La IP original ' + e.assignedIp + ' ya está ocupada.\n\nSe asignará: ' + assignedIp + '\n\n¿Continuar?')) return;
+      if (!confirm('IP original ' + e.assignedIp + ' ocupada.\n\nSe asignará: ' + assignedIp + '\n\n¿Continuar?')) return;
     }
-
-    // Check puertos libres (si los originales están tomados, reasignar bloque)
     const usedPorts = await getUsedPorts(cfg);
     let portWeb = e.portWeb, portWinbox = e.portWinbox, portApi = e.portApi;
     if (usedPorts.has(portWeb) || usedPorts.has(portWinbox) || usedPorts.has(portApi)) {
       const base = nextFreePortBlock(cfg, usedPorts, 3);
       portWeb = base; portWinbox = base + 1; portApi = base + 2;
-      if (!confirm('Algunos puertos originales (' + e.portWeb + '-' + e.portApi + ') ya están ocupados.\n\nSe asignarán: ' + portWeb + '-' + portApi + '\n\n¿Continuar?')) return;
+      if (!confirm('Puertos originales ocupados.\n\nSe asignarán: ' + portWeb + '-' + portApi + '\n\n¿Continuar?')) return;
     }
 
     // 1) Re-crear PPP secret con las credenciales guardadas
+    // v2.2: caller-id="" + only-one=no (CGNAT-friendly)
     const secret = await chrFetch(cfg, '/rest/ppp/secret', {
       method: 'PUT',
       body: JSON.stringify({
@@ -1161,226 +563,134 @@ async function reactivateVpn(id) {
         service: 'sstp',
         'local-address': cfg.localAddress,
         'remote-address': assignedIp,
+        'caller-id': '',
+        'only-one': 'no',
         comment: 'vpn-auto | ' + (e.sanitizedName || e.user) + ' | reactivado ' + new Date().toISOString().slice(0,10),
       }),
     });
 
-    // 2-4) NATs (web, winbox, api)
-    const natWeb = await chrFetch(cfg, '/rest/ip/firewall/nat', {
-      method: 'PUT',
-      body: JSON.stringify({
-        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
-        'in-interface': cfg.wan, 'dst-address': cfg.publicIp,
-        'dst-port': String(portWeb), 'to-addresses': assignedIp, 'to-ports': '80',
-        comment: 'vpn-auto-web | ' + (e.sanitizedName || e.user),
-      }),
-    });
-    const natWinbox = await chrFetch(cfg, '/rest/ip/firewall/nat', {
-      method: 'PUT',
-      body: JSON.stringify({
-        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
-        'in-interface': cfg.wan, 'dst-address': cfg.publicIp,
-        'dst-port': String(portWinbox), 'to-addresses': assignedIp, 'to-ports': '8291',
-        comment: 'vpn-auto-winbox | ' + (e.sanitizedName || e.user),
-      }),
-    });
-    const natApi = await chrFetch(cfg, '/rest/ip/firewall/nat', {
-      method: 'PUT',
-      body: JSON.stringify({
-        chain: 'dstnat', action: 'dst-nat', protocol: 'tcp',
-        'in-interface': cfg.wan, 'dst-address': cfg.publicIp,
-        'dst-port': String(portApi), 'to-addresses': assignedIp, 'to-ports': '8728',
-        comment: 'vpn-auto-api | ' + (e.sanitizedName || e.user),
-      }),
-    });
+    const natWeb = await chrFetch(cfg, '/rest/ip/firewall/nat', { method: 'PUT', body: JSON.stringify({ chain: 'dstnat', action: 'dst-nat', protocol: 'tcp', 'in-interface': cfg.wan, 'dst-address': cfg.publicIp, 'dst-port': String(portWeb), 'to-addresses': assignedIp, 'to-ports': '80', comment: 'vpn-auto-web | ' + (e.sanitizedName || e.user) }) });
+    const natWinbox = await chrFetch(cfg, '/rest/ip/firewall/nat', { method: 'PUT', body: JSON.stringify({ chain: 'dstnat', action: 'dst-nat', protocol: 'tcp', 'in-interface': cfg.wan, 'dst-address': cfg.publicIp, 'dst-port': String(portWinbox), 'to-addresses': assignedIp, 'to-ports': '8291', comment: 'vpn-auto-winbox | ' + (e.sanitizedName || e.user) }) });
+    const natApi = await chrFetch(cfg, '/rest/ip/firewall/nat', { method: 'PUT', body: JSON.stringify({ chain: 'dstnat', action: 'dst-nat', protocol: 'tcp', 'in-interface': cfg.wan, 'dst-address': cfg.publicIp, 'dst-port': String(portApi), 'to-addresses': assignedIp, 'to-ports': '8728', comment: 'vpn-auto-api | ' + (e.sanitizedName || e.user) }) });
 
-    // Actualizar entry
-    e.status = 'active';
-    e.assignedIp = assignedIp;
+    e.status = 'active'; e.assignedIp = assignedIp;
     e.portWeb = portWeb; e.portWinbox = portWinbox; e.portApi = portApi;
     e.pppSecretId = secret['.id'] || secret.id;
-    e.natWebId = natWeb['.id'] || natWeb.id;
-    e.natWinboxId = natWinbox['.id'] || natWinbox.id;
-    e.natApiId = natApi['.id'] || natApi.id;
+    e.natWebId = natWeb['.id'] || natWeb.id; e.natWinboxId = natWinbox['.id'] || natWinbox.id; e.natApiId = natApi['.id'] || natApi.id;
     e.expiresAt = addMonthsISO(new Date().toISOString(), months);
     e.reactivatedAt = new Date().toISOString();
-    // Regenerar script con la IP (por si cambió)
-    e.clientScript = buildClientScript({
-      publicIp: cfg.publicIp, profile: e.profile || cfg.profile, name: e.sanitizedName || e.user, password: e.password,
-    });
-    setHistory(h);
-    renderHistory();
+    e.clientScript = buildClientScript({ publicIp: cfg.publicIp, profile: e.profile || cfg.profile, name: e.sanitizedName || e.user, password: e.password });
+    setHistory(h); renderHistory();
     alert('✅ VPN "' + e.clientName + '" reactivada por ' + months + ' mes(es).\nVence: ' + e.expiresAt);
-  } catch (err) {
-    alert('❌ Error al reactivar: ' + err.message);
-  }
+  } catch (err) { alert('❌ Error: ' + err.message); }
 }
 
-// ========== RENEW: extiende la fecha sin tocar el CHR ==========
 function renewVpn(id) {
-  const h = getHistory();
-  const e = h.find(x => x.id === id);
-  if (!e) return;
-  if (e.status === 'suspended') { alert('Para reactivar una VPN suspendida usa el botón ✅'); return; }
-
-  const inp = prompt(
-    '📅 Renovar fecha de vencimiento de "' + e.clientName + '"\n\n' +
-    '¿Cuántos meses agregar?\n' +
-    '(1 a 24)\n\n' +
-    (e.expiresAt ? 'Vence actualmente: ' + e.expiresAt : 'Sin fecha de vencimiento previa'),
-    '1'
-  );
+  const h = getHistory(); const e = h.find(x => x.id === id); if (!e) return;
+  if (e.status === 'suspended') { alert('Para reactivar usa el botón ✅'); return; }
+  const inp = prompt('📅 Renovar "' + e.clientName + '"\n\n¿Cuántos meses agregar? (1 a 24)\n\n' + (e.expiresAt ? 'Vence: ' + e.expiresAt : 'Sin fecha previa'), '1');
   if (inp === null) return;
   const months = parseInt(inp, 10);
-  if (isNaN(months) || months < 1 || months > 24) {
-    alert('Ingresa un número entre 1 y 24'); return;
-  }
-  // Base: si ya venció, parte desde hoy; si no, suma a la fecha actual de expiración
+  if (isNaN(months) || months < 1 || months > 24) { alert('Número entre 1 y 24'); return; }
   const today = new Date().toISOString().slice(0,10);
   const base = (!e.expiresAt || e.expiresAt < today) ? today : e.expiresAt;
   e.expiresAt = addMonthsISO(base + 'T12:00:00', months);
-  setHistory(h);
-  renderHistory();
+  setHistory(h); renderHistory();
   alert('📅 Fecha extendida a: ' + e.expiresAt);
 }
 
-function viewEntry(id) {
-  const e = getHistory().find(x => x.id === id);
-  if (!e) return;
-  renderResult(e);
-  window.scrollTo({ top: $('genResult').offsetTop - 20, behavior: 'smooth' });
-}
+function viewEntry(id) { const e = getHistory().find(x => x.id === id); if (!e) return; renderResult(e); window.scrollTo({ top: $('genResult').offsetTop - 20, behavior: 'smooth' }); }
 
 async function deleteEntry(id) {
-  const e = getHistory().find(x => x.id === id);
-  if (!e) return;
-  const choice = confirm(
-    'Borrar VPN "' + e.clientName + '"?\n\n' +
-    '✅ OK: borrar del historial Y del CHR (PPP secret + 3 NAT rules)\n' +
-    '❌ Cancelar: no hacer nada\n\n' +
-    '(Para borrar solo del historial local, usa "Solo local" desde el visor)'
-  );
-  if (!choice) return;
+  const e = getHistory().find(x => x.id === id); if (!e) return;
+  if (!confirm('Borrar VPN "' + e.clientName + '"?\n\n✅ Borrar del historial Y del CHR (PPP secret + 3 NAT rules)')) return;
   try {
     const cfg = readCfgFromForm();
     const errors = [];
-    for (const [path, idKey] of [
-      ['/rest/ppp/secret/', 'pppSecretId'],
-      ['/rest/ip/firewall/nat/', 'natWebId'],
-      ['/rest/ip/firewall/nat/', 'natWinboxId'],
-      ['/rest/ip/firewall/nat/', 'natApiId'],
-    ]) {
+    for (const [path, idKey] of [['/rest/ppp/secret/', 'pppSecretId'], ['/rest/ip/firewall/nat/', 'natWebId'], ['/rest/ip/firewall/nat/', 'natWinboxId'], ['/rest/ip/firewall/nat/', 'natApiId']]) {
       if (!e[idKey]) continue;
-      try { await chrFetch(cfg, path + encodeURIComponent(e[idKey]), { method: 'DELETE' }); }
-      catch (err) { errors.push(idKey + ': ' + err.message); }
+      try { await chrFetch(cfg, path + encodeURIComponent(e[idKey]), { method: 'DELETE' }); } catch (err) { errors.push(idKey + ': ' + err.message); }
     }
     const h = getHistory().filter(x => x.id !== id);
-    setHistory(h);
-    renderHistory();
-    if (errors.length) alert('Borrado local OK, pero fallos en CHR:\n' + errors.join('\n'));
+    setHistory(h); renderHistory();
+    if (errors.length) alert('Borrado local OK, fallos en CHR:\n' + errors.join('\n'));
   } catch (e) {
-    if (confirm('Error borrando del CHR: ' + e.message + '\n\n¿Borrar solo del historial local?')) {
-      const h = getHistory().filter(x => x.id !== id);
-      setHistory(h);
-      renderHistory();
+    if (confirm('Error: ' + e.message + '\n\n¿Borrar solo del historial local?')) {
+      const h = getHistory().filter(x => x.id !== id); setHistory(h); renderHistory();
     }
   }
 }
 
 function exportCsv() {
-  const h = getHistory();
-  const cfg = loadCfg();
+  const h = getHistory(); const cfg = loadCfg();
   if (!h.length) { alert('Historial vacío'); return; }
   const rows = [
     ['Fecha creación', 'Cliente VPN', 'Cliente comprador', 'Notas', 'Usuario', 'Contraseña', 'IP asignada', 'IP pública', 'Puerto Web', 'Puerto Winbox', 'Puerto API', 'Vence', 'Estado'],
-    ...h.map(e => [
-      e.createdAt, e.clientName, e.customer || '', e.notes || '',
-      e.user, e.password, e.assignedIp, e.publicIp,
-      e.portWeb, e.portWinbox, e.portApi,
-      e.expiresAt || '—',
-      computeStatus(e, cfg),
-    ]),
+    ...h.map(e => [e.createdAt, e.clientName, e.customer || '', e.notes || '', e.user, e.password, e.assignedIp, e.publicIp, e.portWeb, e.portWinbox, e.portApi, e.expiresAt || '—', computeStatus(e, cfg)]),
   ];
   const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'vpn_history_' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = 'vpn_history_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
   URL.revokeObjectURL(url);
 }
 
-
-// ======================= AUTH SIMPLE =======================
 const AUTH_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
 const AUTH_PASS_HASH = '65698828c836a5cf961bea9b6811eeb7605202074267703b8c4107502c14a0bf';
 const LS_AUTH = 'fixwireless_vpn_auth';
-const AUTH_TTL_MS = 12 * 60 * 60 * 1000; // 12 horas
+const AUTH_TTL_MS = 12 * 60 * 60 * 1000;
 
 async function sha256(text) {
   const buf = new TextEncoder().encode(text);
   const hash = await crypto.subtle.digest('SHA-256', buf);
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
-
 async function tryLogin() {
   const u = document.getElementById('login-user').value.trim().toLowerCase();
   const p = document.getElementById('login-pass').value;
   const err = document.getElementById('login-err');
   err.classList.remove('show');
   if (!u || !p) { err.textContent = 'Completa usuario y contraseña.'; err.classList.add('show'); return; }
-  const uh = await sha256(u);
-  const ph = await sha256(p);
+  const uh = await sha256(u); const ph = await sha256(p);
   if (uh === AUTH_USER_HASH && ph === AUTH_PASS_HASH) {
     localStorage.setItem(LS_AUTH, JSON.stringify({ ok: true, at: Date.now() }));
     document.getElementById('login-overlay').classList.add('hidden');
     document.getElementById('login-pass').value = '';
   } else {
-    err.textContent = '❌ Usuario o contraseña incorrectos.';
-    err.classList.add('show');
+    err.textContent = '❌ Usuario o contraseña incorrectos.'; err.classList.add('show');
     document.getElementById('login-pass').value = '';
   }
 }
-
 function isAuthed() {
   try {
-    const raw = localStorage.getItem(LS_AUTH);
-    if (!raw) return false;
+    const raw = localStorage.getItem(LS_AUTH); if (!raw) return false;
     const obj = JSON.parse(raw);
     if (!obj.ok || !obj.at) return false;
     if (Date.now() - obj.at > AUTH_TTL_MS) { localStorage.removeItem(LS_AUTH); return false; }
     return true;
   } catch { return false; }
 }
-
 function doLogout() {
   if (!confirm('¿Cerrar sesión?')) return;
   localStorage.removeItem(LS_AUTH);
   document.getElementById('login-overlay').classList.remove('hidden');
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
+  document.getElementById('login-user').value = ''; document.getElementById('login-pass').value = '';
   try { document.getElementById('login-user').focus(); } catch {}
 }
-
 function checkAuth() {
-  if (isAuthed()) {
-    document.getElementById('login-overlay').classList.add('hidden');
-  } else {
-    document.getElementById('login-overlay').classList.remove('hidden');
-    setTimeout(() => { try { document.getElementById('login-user').focus(); } catch {} }, 50);
-  }
+  if (isAuthed()) document.getElementById('login-overlay').classList.add('hidden');
+  else { document.getElementById('login-overlay').classList.remove('hidden'); setTimeout(() => { try { document.getElementById('login-user').focus(); } catch {} }, 50); }
 }
 
-// ======================= INIT =======================
 (function init() {
   checkAuth();
   fillForm(loadCfg());
-  // Sync fecha inicial basada en el select de meses (default 6 meses)
   if ($('genMonths') && $('genExpiry')) syncExpiryFromMonths();
   renderHistory();
-  refreshCustomerList();  // v2: poblar autocomplete con clientes ya registrados
+  refreshCustomerList();
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
+
