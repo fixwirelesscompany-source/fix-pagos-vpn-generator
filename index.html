@@ -102,7 +102,7 @@
 
 <div class="wrap">
 <header>
-  <h1>🛡️ Generador de VPN SSTP <span style="font-size:14px;color:#10B981;font-weight:600;">v2.2 (CGNAT-fix)</span></h1>
+  <h1>🛡️ Generador de VPN SSTP <span style="font-size:14px;color:#10B981;font-weight:600;">v2.3 (CGNAT-fix)</span></h1>
   <p>Provisionamiento automático para Mikrotik CHR · <span class="mono">Fix Pagos</span></p>
 </header>
 
@@ -354,8 +354,9 @@ async function generateVpn() {
     const password = randomPassword(10);
 
     // 1) Create PPP secret
-    // v2.2: caller-id="" + only-one=no para evitar que clientes detrás del
-    // mismo CGNAT (misma IP pública) se pateen entre sí al reconectarse.
+    // v2.3: caller-id="" para CGNAT-friendly. NOTA: only-one NO va en el
+    // secret (RouterOS v7 lo rechaza con HTTP 400). Configura una vez en
+    // el CHR: /ppp profile set [find name="default-encryption"] only-one=no
     const secret = await chrFetch(cfg, '/rest/ppp/secret', {
       method: 'PUT',
       body: JSON.stringify({
@@ -363,7 +364,6 @@ async function generateVpn() {
         'local-address': cfg.localAddress,
         'remote-address': assignedIp,
         'caller-id': '',
-        'only-one': 'no',
         comment: 'vpn-auto | ' + name + ' | ' + new Date().toISOString().slice(0,10),
       }),
     });
@@ -553,7 +553,7 @@ async function reactivateVpn(id) {
     }
 
     // 1) Re-crear PPP secret con las credenciales guardadas
-    // v2.2: caller-id="" + only-one=no (CGNAT-friendly)
+    // v2.3: solo caller-id="" (only-one se configura en el profile, no aquí)
     const secret = await chrFetch(cfg, '/rest/ppp/secret', {
       method: 'PUT',
       body: JSON.stringify({
@@ -564,7 +564,6 @@ async function reactivateVpn(id) {
         'local-address': cfg.localAddress,
         'remote-address': assignedIp,
         'caller-id': '',
-        'only-one': 'no',
         comment: 'vpn-auto | ' + (e.sanitizedName || e.user) + ' | reactivado ' + new Date().toISOString().slice(0,10),
       }),
     });
@@ -693,4 +692,3 @@ function checkAuth() {
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
-
